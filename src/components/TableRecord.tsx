@@ -28,7 +28,7 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
         <span className={record.logged ? 'text-green-400' : 'text-rose-400'}>{record.logged ? 'Logged' : 'Unlogged'}</span><br/>
         <span className={record.paid ? 'text-green-400' : 'text-rose-400'}>{record.paid ? 'Paid' : 'Unpaid'}</span>
       </td>
-      <td className="text-left p-3 flex flex-col">
+      <td className="w-40 text-left p-3 flex flex-col">
         <button
           type="button"
           className="text-left"
