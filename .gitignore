@@ -6,4 +6,5 @@ coverage
 .eslintcache
 .idea
 src/styles/app.css
+mocks
 
