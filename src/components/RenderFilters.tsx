@@ -1,16 +1,36 @@
 import Filter from '~/components/Filter';
 import React from 'react';
-import {RecordType} from '~/config/types';
+import {FilterType} from '~/config/types';
 
 interface RenderFiltersType {
-  onHandleFilter(filterField: RecordType, filterVal: any): void;
+  filters: FilterType[];
+  onHandleFilter(updatedFilter: FilterType): void;
 }
-const RenderFilters = ({ onHandleFilter }: RenderFiltersType) => {
+const RenderFilters = ({ filters, onHandleFilter }: RenderFiltersType) => {
   return (
     <div className="py-2 px-4">
       <span className="text-gray-400 text-sm">Filters:</span>
-      <Filter label="Paid" onChanged={() => onHandleFilter('paid', true)} />
-      <Filter label="Logged" onChanged={() => onHandleFilter('logged', false)} />
+      {filters && filters.map(filter => (
+        <Filter
+          key={filter.id}
+          filter={filter}
+          onChanged={() => {
+            let filterVal = undefined;
+            if(filter.active === undefined) {
+              filterVal = true;
+            } else if(filter.active) {
+              filterVal = false;
+            } else {
+              filterVal = undefined;
+            }
+
+            onHandleFilter( {
+              ...filter,
+              active: filterVal
+            });
+          }}
+        />
+      ))}
     </div>
   );
 };

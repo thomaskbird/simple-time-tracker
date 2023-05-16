@@ -8,7 +8,8 @@ export interface ClientType {
 export interface FilterType {
   id: number;
   label: string;
-  active: boolean;
+  val: string;
+  active: undefined | boolean;
 }
 
 export interface SiteTypes {

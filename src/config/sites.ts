@@ -27,12 +27,14 @@ const filters: FilterType[] = [
   {
     id: 1,
     label: 'Paid',
-    active: false,
+    val: 'paid',
+    active: undefined,
   },
   {
     id: 2,
     label: 'Logged',
-    active: false,
+    val: 'logged',
+    active: undefined,
   },
 ]
 

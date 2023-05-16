@@ -1,15 +1,18 @@
+import {FilterType} from '~/config/types';
+
 export interface FilterProps {
-  label: string;
+  filter: FilterType;
   onChanged(): void;
 }
 
-const Filter = ({ label, onChanged }: FilterProps) => {
+const Filter = ({ filter, onChanged }: FilterProps) => {
+
   return (
     <span
-      className="bg-gray-100 text-xs py-1 px-2.5 mx-1"
+      className={`${filter?.active === undefined ? 'bg-gray-100': filter.active ? 'bg-gray-400' : 'bg-rose-300'} text-xs py-1 px-2.5 mx-1 cursor-pointer`}
       onClick={onChanged}
     >
-      {label}
+      {filter?.label}
     </span>
   );
 };
