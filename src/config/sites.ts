@@ -20,6 +20,11 @@ const clients: ClientType[] = [
     id: 4,
     name: 'Prism Phase 2',
     code: 'SSC0040/07'
+  },
+  {
+    id: 5,
+    name: 'New Amsterdam Pharma',
+    code: 'NewAm0006/04'
   }
 ];
 
