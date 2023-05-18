@@ -1,6 +1,5 @@
 export type IdType = number | string;
 export interface ClientType {
-  dbId?: string;
   id: IdType;
   name: string;
   code: string;
@@ -21,7 +20,7 @@ export interface SiteTypes {
   filters: FilterType[];
 }
 
-export interface NewRecordType {
+export interface RecordType {
   to: any;
   from: any;
   description: string;

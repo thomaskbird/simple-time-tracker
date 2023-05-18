@@ -1,13 +1,13 @@
 import moment from 'moment/moment';
 import config from '~/config/sites';
-import {NewRecordType} from '~/config/types';
+import {RecordType} from '~/config/types';
 import {removeRecord, updateFieldInRecord} from '~/controllers/global';
 import Link from 'next/link';
 import React from 'react';
 
 interface TableRecordProps {
-  record: NewRecordType;
-  onUpdateRecords(records: NewRecordType[]): void;
+  record: RecordType;
+  onUpdateRecords(records: RecordType[]): void;
 }
 
 const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
@@ -35,7 +35,7 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
           onClick={() => {
             const confirmRemoveRecord = confirm('Are you sure you want to remove this record?');
             if(confirmRemoveRecord) {
-              const newRecords: NewRecordType[] = removeRecord(record.id);
+              const newRecords: RecordType[] = removeRecord(record.id);
               onUpdateRecords(newRecords);
             }
           }}
@@ -47,7 +47,7 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
           type="button"
           className="text-left"
           onClick={() => {
-            const newRecords: NewRecordType[] = updateFieldInRecord(record.id, 'logged', !record.logged);
+            const newRecords: RecordType[] = updateFieldInRecord(record.id, 'logged', !record.logged);
             onUpdateRecords(newRecords);
           }}
           title="Logged hours"
@@ -58,7 +58,7 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
           type="button"
           className="text-left"
           onClick={() => {
-            const newRecords: NewRecordType[] = updateFieldInRecord(record.id, 'paid', !record.paid);
+            const newRecords: RecordType[] = updateFieldInRecord(record.id, 'paid', !record.paid);
             onUpdateRecords(newRecords);
           }}
           title="Paid"

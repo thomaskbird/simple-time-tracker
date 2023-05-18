@@ -3,14 +3,16 @@ import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import config from '~/config/sites';
 import FormGroup from '~/components/FormGroup';
 import Label from '~/components/Label';
-import {addRecord} from '~/controllers/global';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
 import {NextPage} from 'next';
+import {addDoc, collection, getDocs} from '@firebase/firestore';
+import {firestoreDb} from '~/helpers/firebase';
+import {ClientType} from '~/config/types';
 
 const add: NextPage = () => {
   const router = useRouter();
@@ -18,9 +20,42 @@ const add: NextPage = () => {
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
   const [clientId, setClientId] = useState<undefined | number>(undefined);
+  const [clients, setClients] = useState([]);
 
-  const handleSubmit = () => {
-    addRecord({ to, from, description, clientId });
+  useEffect(() => {
+    const retrieveAllClients = async () => {
+      const clientsFromDb: any = [];
+      const clientSnapshot = await getDocs(collection(firestoreDb, 'clients'));
+      clientSnapshot.forEach((client) => {
+        clientsFromDb.push({
+          ...client.data(),
+          id: client.id,
+        })
+      });
+
+      console.log('clientsFromDb', clientsFromDb);
+      setClients(clientsFromDb);
+    }
+
+    retrieveAllClients();
+  }, []);
+  const handleSubmit = async () => {
+    const clientInfoFromDb: ClientType | undefined = clients.find((cl: ClientType) => cl.id === clientId);
+
+    const addedRecord = await addDoc(collection(firestoreDb, 'records'), {
+      to: to,
+      from: from,
+      description: description,
+      clientId: clientId,
+      name: clientInfoFromDb?.name,
+      code: clientInfoFromDb?.code,
+      logged: false,
+      loggedOn: null,
+      paid: false,
+      paidOn: null
+    });''
+
+    console.log('addedRecord', addedRecord.id);
     router.push('/');
   }
 
@@ -73,7 +108,7 @@ const add: NextPage = () => {
           className="p-2.5 outline-0 drop-shadow-3xl text-gray-700"
         >
           <option>Select client...</option>
-          {config.clients.map(client => (
+          {clients.map(client => (
             <option key={client.id} value={client.id}>{client.name} - {client.code}</option>
           ))}
         </select>

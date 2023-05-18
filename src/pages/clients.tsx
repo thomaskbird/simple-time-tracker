@@ -3,7 +3,7 @@ import Label from '~/components/Label';
 import FormGroup from '~/components/FormGroup';
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {collection, doc, getDocs, setDoc, Timestamp} from '@firebase/firestore';
+import {addDoc, collection, getDocs, Timestamp} from '@firebase/firestore';
 import {firestoreDb, renderFirestoreTimestamp} from '~/helpers/firebase';
 import {useRouter} from 'next/router';
 import {ClientType} from '~/config/types';
@@ -11,7 +11,6 @@ import TableHeaderColumn from '~/components/TableHeaderColumn';
 
 const clients: NextPage = () => {
   const router = useRouter();
-  const [id, setId] = useState(0);
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [clients, setClients] = useState([]);
@@ -23,7 +22,7 @@ const clients: NextPage = () => {
       clientSnapshot.forEach((client) => {
         clientsFromDb.push({
           ...client.data(),
-          dbId: client.id,
+          id: client.id,
         })
       });
 
@@ -35,9 +34,7 @@ const clients: NextPage = () => {
   }, []);
 
   const handleSubmit = async () => {
-    const newClientRef = doc(collection(firestoreDb, 'clients'));
-    const clientData = await setDoc(newClientRef, {
-      id,
+    const clientData = await addDoc(collection(firestoreDb, 'clients'), {
       name,
       code,
       created: Timestamp.now()
@@ -50,18 +47,6 @@ const clients: NextPage = () => {
     <div className="container">
       <div className="py-10 px-12 bg-gray-100 mb-10">
         <h3>Clients</h3>
-
-        <FormGroup>
-          <Label id="id">Id:</Label>
-          <input
-            id="id"
-            name="id"
-            value={id}
-            placeholder="Enter ID..."
-            className="py-2.5 px-5 outline-0 drop-shadow-3xl z-0 placeholder-gray-300 text-gray-700"
-            onChange={e => setId(e.target.value)}
-          />
-        </FormGroup>
 
         <FormGroup>
           <Label id="name">Name:</Label>
@@ -107,7 +92,6 @@ const clients: NextPage = () => {
         <table className="container">
           <thead className="border bg-gray-500 text-gray-50">
             <tr>
-              <TableHeaderColumn>Id</TableHeaderColumn>
               <TableHeaderColumn>Name</TableHeaderColumn>
               <TableHeaderColumn>Code</TableHeaderColumn>
               <TableHeaderColumn>Created</TableHeaderColumn>
@@ -116,8 +100,7 @@ const clients: NextPage = () => {
           </thead>
           <tbody>
           {clients.map((client: ClientType) => (
-            <tr key={client.dbId}>
-              <td className="text-left p-3">{client.id}</td>
+            <tr key={client.id}>
               <td className="text-left p-3">{client.name}</td>
               <td className="text-left p-3">{client.code}</td>
               <td className="text-left p-3">{renderFirestoreTimestamp(client.created)}</td>

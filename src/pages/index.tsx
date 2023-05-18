@@ -1,22 +1,41 @@
 import { NextPage } from 'next'
 import React, {useEffect, useState} from 'react'
-import {FilterType, NewRecordType} from '~/config/types';
+import {ClientType, FilterType, RecordType} from '~/config/types';
 import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
-import {collection, getDocs} from '@firebase/firestore';
+import {collection, doc, getDocs, updateDoc} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
 
+// todo: Need to convert all records to using db id instead field in client record
 const IndexView: NextPage = () => {
-  const [records, setRecords] = useState<NewRecordType[]>([]);
-  const [filteredRecords, setFilteredRecords] = useState<NewRecordType[]>([]);
+  const [records, setRecords] = useState<RecordType[]>([]);
+  const [filteredRecords, setFilteredRecords] = useState<RecordType[]>([]);
   const [filters, setFilters] = useState<FilterType[]>(config.filters);
   const [activeFilter, setActiveFilter] = useState<FilterType | undefined>(undefined);
+  const [clients, setClients] = useState<ClientType[]>([]);
+
+  useEffect(() => {
+    const retrieveAllClients = async () => {
+      const clientsFromDb: any = [];
+      const clientSnapshot = await getDocs(collection(firestoreDb, 'clients'));
+      clientSnapshot.forEach((client) => {
+        clientsFromDb.push({
+          ...client.data(),
+          id: client.id,
+        })
+      });
+
+      setClients(clientsFromDb);
+    }
+
+    retrieveAllClients();
+  }, []);
 
   useEffect(() => {
     const retrieveAllRecords = async () => {
-      const recordsFromDb: NewRecordType[] = [];
+      const recordsFromDb: RecordType[] = [];
       const recordsSnapshot = await getDocs(collection(firestoreDb, 'records'));
       recordsSnapshot.forEach((record: any) => {
         recordsFromDb.push({
@@ -35,7 +54,7 @@ const IndexView: NextPage = () => {
     if(activeFilter?.active === undefined) {
       setRecords(records);
     } else {
-      const filterRecords: NewRecordType[] = [];
+      const filterRecords: RecordType[] = [];
       records.forEach(item => {
         if(item[activeFilter.val] === activeFilter?.active) {
           filterRecords.push(item);
@@ -72,18 +91,22 @@ const IndexView: NextPage = () => {
   return (
     <div className="container">
       <RenderFilters
+        clients={clients}
         filters={filters}
         onHandleFilter={updatedFilter => handleFilter(updatedFilter)}
         onSetRecords={(clientId) => {
-          const filterRecords: NewRecordType[] = [];
-          records.forEach(item => {
-            console.log(item.clientId, clientId);
-            if(item.clientId === clientId) {
-              filterRecords.push(item);
-            }
-          });
+          if(clientId === 'Select client...') {
+            setFilteredRecords(records);
+          } else {
+            const filterRecords: RecordType[] = [];
+            records.forEach(item => {
+              if(item.clientId === clientId) {
+                filterRecords.push(item);
+              }
+            });
 
-          setFilteredRecords(filterRecords.length ? filterRecords : []);
+            setFilteredRecords(filterRecords.length ? filterRecords : []);
+          }
         }}
       />
 
@@ -96,7 +119,7 @@ const IndexView: NextPage = () => {
             </tr>
           )}
 
-          {filteredRecords.length > 0 && filteredRecords.map((record: NewRecordType) => (
+          {filteredRecords.length > 0 && filteredRecords.map((record: RecordType) => (
             <TableRecord
               key={record.id}
               record={record}
