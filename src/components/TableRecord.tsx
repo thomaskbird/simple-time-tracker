@@ -15,8 +15,6 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
     return diff / 60;
   }
 
-  console.log('record.from', record.from.toDate());
-
   return (
     <tr key={record.id}>
       <td className="text-left p-3">{record.clientId}</td>
