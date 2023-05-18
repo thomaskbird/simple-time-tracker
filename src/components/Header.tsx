@@ -20,14 +20,6 @@ const Header = () => {
           <a
             href="#"
             className="text-sm font-semibold leading-6 text-gray-900"
-            onClick={() => {
-              const isSurePrompt = confirm('Are your sure want to delete everything?');
-              if(isSurePrompt) {
-                localStorage.removeItem('records');
-              } else {
-                return false;
-              }
-            }}
           >
             Clear all records&nbsp;
             <span aria-hidden="true">&#128465;</span>
