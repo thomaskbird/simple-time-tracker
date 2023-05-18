@@ -3,15 +3,15 @@ import Link from 'next/link';
 
 const Header = () => {
   return (
-    <header className="bg-white">
+    <header className="bg-white drop-shadow-3xl mb-12">
       <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex gap-6">
+          <Link href="/">
+            <a className="text-sm font-semibold leading-6 text-gray-900">Home</a>
+          </Link>
           <Link href="/add">
             <a className="text-sm font-semibold leading-6 text-gray-900">Add</a>
           </Link>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Features</a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Company</a>
         </div>
         <div className="lg:flex lg:flex-1 lg:justify-end">
           <a

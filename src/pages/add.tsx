@@ -9,6 +9,7 @@ import FormGroup from '~/components/FormGroup';
 import Label from '~/components/Label';
 import {addRecord} from '~/controllers/global';
 import {useRouter} from 'next/router';
+import Link from 'next/link';
 
 const Add = () => {
   const router = useRouter();
@@ -77,13 +78,20 @@ const Add = () => {
         </select>
       </FormGroup>
 
-      <button
-        type="button"
-        onClick={() => handleSubmit()}
-        className="px-5 py-2.5 bg-emerald-300 rounded transition-all hover:bg-emerald-400 active:bg-emerald-500"
-      >
-        Submit
-      </button>
+      <div className="flex items-center">
+        <button
+          type="button"
+          onClick={() => handleSubmit()}
+          className="px-5 py-2.5 bg-emerald-300 rounded transition-all hover:bg-emerald-400 active:bg-emerald-500"
+        >
+          Submit
+        </button>
+        <Link href="/">
+          <a className="text-gray-400 ml-10">
+            Cancel
+          </a>
+        </Link>
+      </div>
     </div>
   )
 }

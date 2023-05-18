@@ -7,4 +7,6 @@ coverage
 .idea
 src/styles/app.css
 mocks
+.env.local
+.env
 

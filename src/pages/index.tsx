@@ -6,6 +6,8 @@ import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
+import {collection, doc, setDoc} from '@firebase/firestore';
+import {firestoreDb} from '~/helpers/firebase';
 
 const IndexView: NextPage = () => {
   const [records, setRecords] = useState<RecordType[]>([]);
@@ -54,9 +56,42 @@ const IndexView: NextPage = () => {
     });
   }
 
+  const createClient = async () => {
+    const client = {
+      id: 1,
+      name: 'Neurocrine',
+      code: 'NEUR0014/49',
+    };
+
+    const newClientRef = doc(collection(firestoreDb, 'clients'));
+    const clientData = await setDoc(newClientRef, client);
+    console.log('clientData', clientData);
+  };
+
   return (
     <div className="container">
-      <RenderFilters filters={filters} onHandleFilter={updatedFilter => handleFilter(updatedFilter)} />
+      <button
+        type="button"
+        onClick={() => createClient()}
+        className="bg-gray-100 py-3 px-5"
+      >
+        Create client
+      </button>
+      <RenderFilters
+        filters={filters}
+        onHandleFilter={updatedFilter => handleFilter(updatedFilter)}
+        onSetRecords={(clientId) => {
+          const filteredRecords: RecordType[] = [];
+          getAllRecords().forEach(item => {
+            console.log(item.clientId, clientId);
+            if(item.clientId === clientId) {
+              filteredRecords.push(item);
+            }
+          });
+
+          setRecords(filteredRecords.length ? filteredRecords : []);
+        }}
+      />
 
       <table className="container">
         <TableHeader />

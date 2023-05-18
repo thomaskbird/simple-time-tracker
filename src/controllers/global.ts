@@ -60,6 +60,7 @@ export const updateFieldInRecord = (id: IdType, field: any, val: any) => {
 }
 
 export const updateRecord = (id: IdType, record: RecordType) => {
+  const clientInfo = getClientById(Number(record.clientId));
   const records = getRecordsFromStorage();
   const search = findRecordById(id);
 
@@ -67,15 +68,12 @@ export const updateRecord = (id: IdType, record: RecordType) => {
     const newRecords = records.filter(record => record.id !== id);
     newRecords.push({
       ...search,
-      ...record
+      ...record,
+      name: clientInfo!.name,
+      code: clientInfo!.code,
     });
 
     localStorage.setItem('records', JSON.stringify(newRecords));
     return newRecords;
   }
-}
-
-export const reformatTimestamps = () => {
-  const records = getRecordsFromStorage();
-
 }
