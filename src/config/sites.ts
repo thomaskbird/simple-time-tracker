@@ -32,6 +32,16 @@ const filters: FilterType[] = [
     },
     val: 'week',
     active: undefined
+  },
+  {
+    id: 4,
+    type: 'mono',
+    labels: {
+      notDefined: 'Last Week Filter',
+      truthy: 'Last week',
+    },
+    val: 'last-week',
+    active: undefined
   }
 ];
 

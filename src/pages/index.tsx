@@ -5,8 +5,14 @@ import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
-import {getDocs, where} from '@firebase/firestore';
-import {collectionClients, collectionRecords} from '~/helpers/firebase';
+import {getDocs, orderBy, where} from '@firebase/firestore';
+import {
+  collectionClients,
+  collectionRecords,
+  makeArrayFromSnapshot,
+  queryAllClientsOrdered,
+  queryAllRecordsOrdered
+} from '~/helpers/firebase';
 import moment from 'moment';
 import {query} from '@firebase/database';
 
@@ -40,29 +46,16 @@ const IndexView: NextPage = () => {
 
   useEffect(() => {
     const retrieveAllRecords = async () => {
-      const recordsFromDb: RecordType[] = [];
       const recordsSnapshot =
-        await getDocs(collectionRecords);
-      recordsSnapshot.forEach((record: any) => {
-        recordsFromDb.push({
-          ...record.data(),
-          id: record.id
-        })
-      });
-
-      const clientsFromDb: any = [];
-      const clientSnapshot =
-        await getDocs(collectionClients);
-      clientSnapshot.forEach((client) => {
-        clientsFromDb.push({
-          ...client.data(),
-          id: client.id,
-        })
-      });
-
-      setClients(clientsFromDb);
+        await getDocs(queryAllRecordsOrdered);
+      const recordsFromDb = makeArrayFromSnapshot(recordsSnapshot);
       setRecords(recordsFromDb);
       setFilteredRecords(recordsFromDb);
+
+      const clientSnapshot =
+        await getDocs(queryAllClientsOrdered);
+      setClients(makeArrayFromSnapshot(clientSnapshot));
+
       setIsLoading(false);
     }
 
@@ -90,6 +83,29 @@ const IndexView: NextPage = () => {
       setFilteredRecords(filterRecords);
     };
 
+    const runLastWeekQuery = async () => {
+      const startOfLastWeek = moment().subtract(1, 'weeks').startOf('week').toDate()
+      const endOfLastWeek = moment().subtract(1, 'weeks').endOf('week').toDate();
+
+      const filterRecords: RecordType[] = [];
+
+      const lastWeekQuery = query(
+        collectionRecords,
+        where('to', '>', startOfLastWeek),
+        where('to', '<', endOfLastWeek)
+      );
+
+      const lastWeekSnapshot = await getDocs(lastWeekQuery);
+      lastWeekSnapshot.forEach((rec: any) => {
+        filterRecords.push({
+          ...rec.data(),
+          id: rec.id
+        });
+      });
+
+      setFilteredRecords(filterRecords);
+    }
+
     if(activeFilter?.active === undefined) {
       setFilteredRecords(records);
     } else {
@@ -97,6 +113,8 @@ const IndexView: NextPage = () => {
 
       if(activeFilter.val === 'week') {
         runWeekQuery();
+      } else if(activeFilter.val === 'last-week') {
+        runLastWeekQuery();
       } else {
         records.forEach(item => {
           if(item[activeFilter.val] === activeFilter?.active) {
