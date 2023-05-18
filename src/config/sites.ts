@@ -1,5 +1,4 @@
 import {FilterType, SiteTypes} from '~/config/types';
-import {clients} from '~/mocks/client_mock';
 
 const filters: FilterType[] = [
   {
@@ -39,7 +38,6 @@ const filters: FilterType[] = [
 const config: SiteTypes = {
   dateTimeFormat: 'y-MM-dd HH:mm:ss',
   momentFormat: 'YYYY-MM-DD hh:mm:ss',
-  clients: clients,
   filters: filters,
 };
 

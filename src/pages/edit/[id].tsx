@@ -7,7 +7,6 @@ import {useEffect, useState} from 'react';
 import config from '~/config/sites';
 import FormGroup from '~/components/FormGroup';
 import Label from '~/components/Label';
-import {findRecordById, updateRecord} from '~/controllers/global';
 import {useRouter} from 'next/router';
 import {collection, doc, getDoc, getDocs, updateDoc} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';

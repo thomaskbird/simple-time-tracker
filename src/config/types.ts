@@ -25,7 +25,6 @@ export interface FilterType {
 export interface SiteTypes {
   dateTimeFormat: string;
   momentFormat: string;
-  clients: ClientType[];
   filters: FilterType[];
 }
 

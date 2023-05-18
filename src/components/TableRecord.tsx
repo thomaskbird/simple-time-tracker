@@ -10,6 +10,7 @@ interface TableRecordProps {
   onUpdateRecords(records: RecordType[]): void;
 }
 
+// todo: figure out how we will update single field in record
 const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
   const calculateDiff = (diff: number) => {
     return diff / 60;
@@ -17,7 +18,6 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
 
   return (
     <tr key={record.id}>
-      <td className="text-left p-3">{record.clientId}</td>
       <td className="text-left p-3">{record.name}</td>
       <td className="text-left p-3">{record.code}</td>
       <td className="text-left p-3">{record.description}</td>
