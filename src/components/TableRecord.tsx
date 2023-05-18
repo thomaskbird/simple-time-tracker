@@ -15,7 +15,7 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
     return diff / 60;
   }
 
-  console.log('record.from', record.from);
+  console.log('record.from', record.from.toDate());
 
   return (
     <tr key={record.id}>
@@ -23,9 +23,9 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
       <td className="text-left p-3">{record.name}</td>
       <td className="text-left p-3">{record.code}</td>
       <td className="text-left p-3">{record.description}</td>
-      <td className="text-left p-3">{moment(record.from).format(config.momentFormat)}</td>
-      <td className="text-left p-3">{moment(record.to).format(config.momentFormat)}</td>
-      <td className="text-left p-3">{calculateDiff(moment(record.to).diff(record.from, 'minutes'))}hrs</td>
+      <td className="text-left p-3">{moment(record.from.toDate()).format(config.momentFormat)}</td>
+      <td className="text-left p-3">{moment(record.to.toDate()).format(config.momentFormat)}</td>
+      <td className="text-left p-3">{calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes'))}hrs</td>
       <td className="text-left p-3">
         <span className={record.logged ? 'text-green-400' : 'text-rose-400'}>{record.logged ? 'Logged' : 'Unlogged'}</span><br/>
         <span className={record.paid ? 'text-green-400' : 'text-rose-400'}>{record.paid ? 'Paid' : 'Unpaid'}</span>
