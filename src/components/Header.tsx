@@ -1,25 +1,27 @@
 import React from 'react';
 import Link from 'next/link';
 
+const HeaderLinkStyles = 'px-0 py-5 text-sm font-semibold leading-6 text-gray-500 border-b-2 border-b-transparent hover:text-gray-900 hover:border-b-gray-900 hover:border-b-2';
+
 const Header = () => {
   return (
     <header className="bg-white drop-shadow-3xl mb-12">
-      <nav className="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <nav className="mx-auto flex items-center justify-between px-6 lg:px-8" aria-label="Global">
         <div className="flex gap-6">
           <Link href="/">
-            <a className="text-sm font-semibold leading-6 text-gray-900">Home</a>
+            <a className={HeaderLinkStyles}>Dashboard</a>
           </Link>
           <Link href="/add">
-            <a className="text-sm font-semibold leading-6 text-gray-900">Add time</a>
+            <a className={HeaderLinkStyles}>Add time</a>
           </Link>
           <Link href="/clients">
-            <a className="text-sm font-semibold leading-6 text-gray-900">Clients</a>
+            <a className={HeaderLinkStyles}>Clients</a>
           </Link>
         </div>
         <div className="lg:flex lg:flex-1 lg:justify-end">
           <a
             href="#"
-            className="text-sm font-semibold leading-6 text-gray-900"
+            className={HeaderLinkStyles}
           >
             Clear all records&nbsp;
             <span aria-hidden="true">&#128465;</span>

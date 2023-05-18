@@ -5,7 +5,7 @@ interface TableHeaderProps {}
 
 const TableHeader = ({}: TableHeaderProps) => {
   return (
-    <div className="border bg-gray-500 text-gray-50">
+    <div className="bg-gray-500 text-gray-50">
       <div className="flex flex-row">
         <TableHeaderColumn>Name</TableHeaderColumn>
         <TableHeaderColumn>Code</TableHeaderColumn>

@@ -8,6 +8,7 @@ import {firestoreDb, renderFirestoreTimestamp} from '~/helpers/firebase';
 import {useRouter} from 'next/router';
 import {ClientType} from '~/config/types';
 import TableHeaderColumn from '~/components/TableHeaderColumn';
+import TableColumn from '~/components/TableColumn';
 
 const clients: NextPage = () => {
   const router = useRouter();
@@ -88,26 +89,26 @@ const clients: NextPage = () => {
       </div>
 
       <div className="bg-white">
-        <table className="container">
-          <thead className="border bg-gray-500 text-gray-50">
-            <tr>
+        <div className="container">
+          <div className="bg-gray-500 text-gray-50">
+            <div className="flex flex-row">
               <TableHeaderColumn>Name</TableHeaderColumn>
               <TableHeaderColumn>Code</TableHeaderColumn>
               <TableHeaderColumn>Created</TableHeaderColumn>
               <TableHeaderColumn>Actions</TableHeaderColumn>
-            </tr>
-          </thead>
-          <tbody>
+            </div>
+          </div>
+          <div>
           {clients.map((client: ClientType) => (
-            <tr key={client.id}>
-              <td className="text-left p-3">{client.name}</td>
-              <td className="text-left p-3">{client.code}</td>
-              <td className="text-left p-3">{renderFirestoreTimestamp(client.created)}</td>
-              <td className="text-left p-3"></td>
-            </tr>
+            <div key={client.id} className="flex flex-row">
+              <TableColumn>{client.name}</TableColumn>
+              <TableColumn>{client.code}</TableColumn>
+              <TableColumn>{renderFirestoreTimestamp(client.created)}</TableColumn>
+              <TableColumn>TEST</TableColumn>
+            </div>
           ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
 
       </div>
     </div>
