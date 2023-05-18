@@ -5,8 +5,10 @@ import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
-import {collection, doc, getDocs, updateDoc} from '@firebase/firestore';
+import {collection, getDocs, where} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
+import moment from 'moment';
+import {query} from '@firebase/database';
 
 // todo: Need to convert all records to using db id instead field in client record
 const IndexView: NextPage = () => {
@@ -51,21 +53,46 @@ const IndexView: NextPage = () => {
   }, []);
 
   useEffect(() => {
+    const runWeekQuery = async () => {
+      const startOfWeek = moment().startOf('week').toDate();
+      const filterRecords: RecordType[] = [];
+
+      const weekQuery = query(
+        collection(firestoreDb, 'records'),
+        where('to', '>', startOfWeek),
+      );
+
+      const weekSnapshot = await getDocs(weekQuery);
+      weekSnapshot.forEach((rec: any) => {
+        filterRecords.push({
+          ...rec.data(),
+          id: rec.id
+        });
+      });
+
+      setFilteredRecords(filterRecords);
+    };
+
     if(activeFilter?.active === undefined) {
-      setRecords(records);
+      setFilteredRecords(records);
     } else {
       const filterRecords: RecordType[] = [];
-      records.forEach(item => {
-        if(item[activeFilter.val] === activeFilter?.active) {
-          filterRecords.push(item);
-        }
-      });
+
+      if(activeFilter.val === 'week') {
+        runWeekQuery();
+      } else {
+        records.forEach(item => {
+          if(item[activeFilter.val] === activeFilter?.active) {
+            filterRecords.push(item);
+          }
+        });
+      }
 
       setFilteredRecords(filterRecords.length ? filterRecords : []);
     }
   }, [filters]);
 
-  const handleFilter = (filter: FilterType) => {
+  const handleFiltersState = (filter: FilterType) => {
     setActiveFilter(filter);
     setFilters((prevState) => {
       const updatedFilters: FilterType[] = [];
@@ -93,7 +120,7 @@ const IndexView: NextPage = () => {
       <RenderFilters
         clients={clients}
         filters={filters}
-        onHandleFilter={updatedFilter => handleFilter(updatedFilter)}
+        onHandleFilter={updatedFilter => handleFiltersState(updatedFilter)}
         onSetRecords={(clientId) => {
           if(clientId === 'Select client...') {
             setFilteredRecords(records);

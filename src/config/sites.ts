@@ -4,17 +4,37 @@ import {clients} from '~/mocks/client_mock';
 const filters: FilterType[] = [
   {
     id: 1,
-    label: 'Paid',
+    type: 'dual',
+    labels: {
+      notDefined: 'Paid Filter',
+      truthy: 'Paid',
+      falsy: 'Unpaid'
+    },
     val: 'paid',
     active: undefined,
   },
   {
     id: 2,
-    label: 'Logged',
+    type: 'dual',
+    labels: {
+      notDefined: 'Logged Filter',
+      truthy: 'Logged',
+      falsy: 'Unlogged'
+    },
     val: 'logged',
     active: undefined,
   },
-]
+  {
+    id: 3,
+    type: 'mono',
+    labels: {
+      notDefined: 'Week Filter',
+      truthy: 'This week',
+    },
+    val: 'week',
+    active: undefined
+  }
+];
 
 const config: SiteTypes = {
   dateTimeFormat: 'y-MM-dd HH:mm:ss',

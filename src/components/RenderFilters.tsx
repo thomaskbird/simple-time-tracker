@@ -1,13 +1,33 @@
 import Filter from '~/components/Filter';
 import React from 'react';
-import {ClientType, FilterType} from '~/config/types';
-import config from '~/config/sites';
+import {ClientType, FilterType, FilterTypes} from '~/config/types';
 
 interface RenderFiltersType {
   clients: ClientType[];
   filters: FilterType[];
   onHandleFilter(updatedFilter: FilterType): void;
   onSetRecords(clientId: number | string): void;
+}
+
+const manageFilterActiveState = (active: any, filterType: FilterTypes) => {
+  let filterVal;
+  if(filterType === 'mono') {
+    if(active === undefined) {
+      filterVal = true;
+    } else {
+      filterVal = undefined;
+    }
+  } else {
+    if(active === undefined) {
+      filterVal = true;
+    } else if(active) {
+      filterVal = false;
+    } else {
+      filterVal = undefined;
+    }
+  }
+
+  return filterVal;
 }
 
 const RenderFilters = ({ clients, filters, onHandleFilter, onSetRecords }: RenderFiltersType) => {
@@ -19,14 +39,7 @@ const RenderFilters = ({ clients, filters, onHandleFilter, onSetRecords }: Rende
           key={filter.id}
           filter={filter}
           onChanged={() => {
-            let filterVal = undefined;
-            if(filter.active === undefined) {
-              filterVal = true;
-            } else if(filter.active) {
-              filterVal = false;
-            } else {
-              filterVal = undefined;
-            }
+            let filterVal = manageFilterActiveState(filter.active, filter.type);
 
             onHandleFilter( {
               ...filter,

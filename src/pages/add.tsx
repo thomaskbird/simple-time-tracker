@@ -33,7 +33,6 @@ const add: NextPage = () => {
         })
       });
 
-      console.log('clientsFromDb', clientsFromDb);
       setClients(clientsFromDb);
     }
 

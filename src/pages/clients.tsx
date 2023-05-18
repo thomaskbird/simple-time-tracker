@@ -26,7 +26,6 @@ const clients: NextPage = () => {
         })
       });
 
-      console.log('clientsFromDb', clientsFromDb);
       setClients(clientsFromDb);
     }
 
@@ -39,7 +38,7 @@ const clients: NextPage = () => {
       code,
       created: Timestamp.now()
     });
-    console.log('clientData', clientData);
+
     router.push('/');
   }
 

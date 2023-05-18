@@ -6,9 +6,18 @@ export interface ClientType {
   created: any;
 }
 
+export interface FilterLabelsType {
+  notDefined: string;
+  truthy: string;
+  falsy?: string;
+}
+
+export type FilterTypes = 'mono' | 'dual';
+
 export interface FilterType {
   id: number;
-  label: string;
+  type: FilterTypes;
+  labels: FilterLabelsType;
   val: string;
   active: undefined | boolean;
 }

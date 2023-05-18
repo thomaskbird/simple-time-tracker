@@ -7,13 +7,22 @@ export interface FilterProps {
 
 const Filter = ({ filter, onChanged }: FilterProps) => {
   const generateLabel = () => {
-    switch(filter?.active) {
-      case undefined:
-        return `${filter?.label} Filter`;
-      case true:
-        return filter?.label;
-      default:
-        return `Un${filter?.label}`;
+    if(filter.type === 'mono') {
+      switch(filter?.active) {
+        case undefined:
+          return filter.labels.notDefined;
+        default:
+          return filter.labels.truthy;
+      }
+    } else {
+      switch(filter?.active) {
+        case undefined:
+          return filter.labels.notDefined;
+        case true:
+          return filter.labels.truthy;
+        default:
+          return filter.labels.falsy;
+      }
     }
   }
   return (
