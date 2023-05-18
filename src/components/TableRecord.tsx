@@ -4,6 +4,7 @@ import {RecordType} from '~/config/types';
 import {removeRecord, updateFieldInRecord} from '~/controllers/global';
 import Link from 'next/link';
 import React from 'react';
+import TableColumn from '~/components/TableColumn';
 
 interface TableRecordProps {
   record: RecordType;
@@ -17,18 +18,18 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
   }
 
   return (
-    <tr key={record.id}>
-      <td className="text-left p-3">{record.name}</td>
-      <td className="text-left p-3">{record.code}</td>
-      <td className="text-left p-3">{record.description}</td>
-      <td className="text-left p-3">{moment(record.from.toDate()).format(config.momentFormat)}</td>
-      <td className="text-left p-3">{moment(record.to.toDate()).format(config.momentFormat)}</td>
-      <td className="text-left p-3">{calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes'))}hrs</td>
-      <td className="text-left p-3">
-        <span className={record.logged ? 'text-green-400' : 'text-rose-400'}>{record.logged ? 'Logged' : 'Unlogged'}</span><br/>
-        <span className={record.paid ? 'text-green-400' : 'text-rose-400'}>{record.paid ? 'Paid' : 'Unpaid'}</span>
-      </td>
-      <td className="w-40 text-left p-3 flex flex-col">
+    <div key={record.id} className="flex flex-row">
+      <TableColumn>{record.name}</TableColumn>
+      <TableColumn>{record.code}</TableColumn>
+      <TableColumn>{record.description}</TableColumn>
+      <TableColumn>{moment(record.from.toDate()).format(config.momentFormat)}</TableColumn>
+      <TableColumn>{moment(record.to.toDate()).format(config.momentFormat)}</TableColumn>
+      <TableColumn>{calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes'))}hrs</TableColumn>
+      <TableColumn stackChildren>
+        <p className={record.logged ? 'text-green-400' : 'text-rose-400'}>{record.logged ? 'Logged' : 'Unlogged'}</p>
+        <p className={record.paid ? 'text-green-400' : 'text-rose-400'}>{record.paid ? 'Paid' : 'Unpaid'}</p>
+      </TableColumn>
+      <TableColumn stackChildren width="flex-2x">
         <button
           type="button"
           className="text-left"
@@ -65,8 +66,8 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
         >
           &#128181; {record.paid ? 'Mark Unpaid' : 'Mark Paid'}
         </button>
-      </td>
-    </tr>
+      </TableColumn>
+    </div>
   )
 };
 

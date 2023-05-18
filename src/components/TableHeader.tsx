@@ -5,8 +5,8 @@ interface TableHeaderProps {}
 
 const TableHeader = ({}: TableHeaderProps) => {
   return (
-    <thead className="border bg-gray-500 text-gray-50">
-      <tr>
+    <div className="border bg-gray-500 text-gray-50">
+      <div className="flex flex-row">
         <TableHeaderColumn>Name</TableHeaderColumn>
         <TableHeaderColumn>Code</TableHeaderColumn>
         <TableHeaderColumn>Description</TableHeaderColumn>
@@ -14,9 +14,9 @@ const TableHeader = ({}: TableHeaderProps) => {
         <TableHeaderColumn>To</TableHeaderColumn>
         <TableHeaderColumn>Duration</TableHeaderColumn>
         <TableHeaderColumn>Status</TableHeaderColumn>
-        <TableHeaderColumn>Actions</TableHeaderColumn>
-      </tr>
-    </thead>
+        <TableHeaderColumn width="flex-2x">Actions</TableHeaderColumn>
+      </div>
+    </div>
   )
 };
 

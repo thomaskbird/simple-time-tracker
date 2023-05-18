@@ -5,23 +5,54 @@ import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
-import {collection, getDocs, where} from '@firebase/firestore';
-import {firestoreDb} from '~/helpers/firebase';
+import {getDocs, where} from '@firebase/firestore';
+import {collectionClients, collectionRecords} from '~/helpers/firebase';
 import moment from 'moment';
 import {query} from '@firebase/database';
 
-// todo: Need to convert all records to using db id instead field in client record
+const handleFiltersActiveState = (filters: FilterType[], updatedFilter: FilterType) => {
+  const updatedFilters: FilterType[] = [];
+  filters.forEach((item: FilterType) => {
+    if(item.id === updatedFilter.id) {
+      updatedFilters.push({
+        ...item,
+        ...updatedFilter,
+        active: updatedFilter.active
+      });
+    } else {
+      updatedFilters.push({
+        ...item,
+        active: undefined
+      });
+    }
+  });
+
+  return updatedFilters;
+}
+
 const IndexView: NextPage = () => {
   const [records, setRecords] = useState<RecordType[]>([]);
   const [filteredRecords, setFilteredRecords] = useState<RecordType[]>([]);
   const [filters, setFilters] = useState<FilterType[]>(config.filters);
   const [activeFilter, setActiveFilter] = useState<FilterType | undefined>(undefined);
   const [clients, setClients] = useState<ClientType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const retrieveAllClients = async () => {
+    const retrieveAllRecords = async () => {
+      const recordsFromDb: RecordType[] = [];
+      const recordsSnapshot =
+        await getDocs(collectionRecords);
+      recordsSnapshot.forEach((record: any) => {
+        recordsFromDb.push({
+          ...record.data(),
+          id: record.id
+        })
+      });
+
       const clientsFromDb: any = [];
-      const clientSnapshot = await getDocs(collection(firestoreDb, 'clients'));
+      const clientSnapshot =
+        await getDocs(collectionClients);
       clientSnapshot.forEach((client) => {
         clientsFromDb.push({
           ...client.data(),
@@ -30,23 +61,9 @@ const IndexView: NextPage = () => {
       });
 
       setClients(clientsFromDb);
-    }
-
-    retrieveAllClients();
-  }, []);
-
-  useEffect(() => {
-    const retrieveAllRecords = async () => {
-      const recordsFromDb: RecordType[] = [];
-      const recordsSnapshot = await getDocs(collection(firestoreDb, 'records'));
-      recordsSnapshot.forEach((record: any) => {
-        recordsFromDb.push({
-          ...record.data(),
-          id: record.id
-        })
-      })
       setRecords(recordsFromDb);
       setFilteredRecords(recordsFromDb);
+      setIsLoading(false);
     }
 
     retrieveAllRecords();
@@ -58,7 +75,7 @@ const IndexView: NextPage = () => {
       const filterRecords: RecordType[] = [];
 
       const weekQuery = query(
-        collection(firestoreDb, 'records'),
+        collectionRecords,
         where('to', '>', startOfWeek),
       );
 
@@ -92,69 +109,57 @@ const IndexView: NextPage = () => {
     }
   }, [filters]);
 
-  const handleFiltersState = (filter: FilterType) => {
+  const handleUpdateFiltersState = (filter: FilterType) => {
     setActiveFilter(filter);
-    setFilters((prevState) => {
-      const updatedFilters: FilterType[] = [];
-      prevState.forEach(item => {
-        if(item.id === filter.id) {
-          updatedFilters.push({
-            ...item,
-            ...filter,
-            active: filter.active
-          });
-        } else {
-          updatedFilters.push({
-            ...item,
-            active: undefined
-          });
-        }
-      });
-
-      return updatedFilters;
-    });
-  }
+    setFilters((prevState) => handleFiltersActiveState(prevState, filter));
+  };
 
   return (
     <div className="container">
-      <RenderFilters
-        clients={clients}
-        filters={filters}
-        onHandleFilter={updatedFilter => handleFiltersState(updatedFilter)}
-        onSetRecords={(clientId) => {
-          if(clientId === 'Select client...') {
-            setFilteredRecords(records);
-          } else {
-            const filterRecords: RecordType[] = [];
-            records.forEach(item => {
-              if(item.clientId === clientId) {
-                filterRecords.push(item);
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <>
+          <RenderFilters
+            clients={clients}
+            filters={filters}
+            onHandleFilter={updatedFilter => handleUpdateFiltersState(updatedFilter)}
+            onSetRecords={(clientId) => {
+              if(clientId === 'Select client...') {
+                setFilteredRecords(records);
+              } else {
+                const filterRecords: RecordType[] = [];
+                records.forEach(item => {
+                  if(item.clientId === clientId) {
+                    filterRecords.push(item);
+                  }
+                });
+
+                setFilteredRecords(filterRecords.length ? filterRecords : []);
               }
-            });
+            }}
+          />
 
-            setFilteredRecords(filterRecords.length ? filterRecords : []);
-          }
-        }}
-      />
+          <div className="container">
+            <TableHeader />
+            <div>
+              {filteredRecords.length === 0 && (
+                <tr>
+                  <td colSpan={7}>No records found...</td>
+                </tr>
+              )}
 
-      <table className="container">
-        <TableHeader />
-        <tbody>
-          {filteredRecords.length === 0 && (
-            <tr>
-              <td colSpan={7}>No records found...</td>
-            </tr>
-          )}
-
-          {filteredRecords.length > 0 && filteredRecords.map((record: RecordType) => (
-            <TableRecord
-              key={record.id}
-              record={record}
-              onUpdateRecords={newRecords => setRecords(newRecords)}
-            />
-          ))}
-        </tbody>
-      </table>
+              {filteredRecords.length > 0 && filteredRecords.map((record: RecordType) => (
+                <TableRecord
+                  key={record.id}
+                  record={record}
+                  onUpdateRecords={newRecords => setRecords(newRecords)}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

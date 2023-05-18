@@ -1,5 +1,5 @@
 import {getApp, getApps, initializeApp} from '@firebase/app';
-import {getFirestore} from '@firebase/firestore';
+import {collection, getFirestore} from '@firebase/firestore';
 import moment from 'moment';
 import config from '~/config/sites';
 
@@ -12,7 +12,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_APP_ID
 };
 
-// todo: https://www.npmjs.com/package/firebase
+const renderFirestoreTimestamp = (timestamp: any) =>
+  moment(timestamp.toDate()).format(config.momentFormat);
+
 let firestoreDb = null;
 let timeTracker = null;
 
@@ -28,11 +30,13 @@ try {
   console.log('e', e);
 }
 
-const renderFirestoreTimestamp = (timestamp: any) =>
-  moment(timestamp.toDate()).format(config.momentFormat);
+const collectionRecords = collection(firestoreDb, 'records');
+const collectionClients = collection(firestoreDb, 'clients');
 
 export {
   firestoreDb,
   timeTracker,
-  renderFirestoreTimestamp
+  renderFirestoreTimestamp,
+  collectionRecords,
+  collectionClients
 }
