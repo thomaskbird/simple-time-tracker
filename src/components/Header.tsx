@@ -10,7 +10,10 @@ const Header = () => {
             <a className="text-sm font-semibold leading-6 text-gray-900">Home</a>
           </Link>
           <Link href="/add">
-            <a className="text-sm font-semibold leading-6 text-gray-900">Add</a>
+            <a className="text-sm font-semibold leading-6 text-gray-900">Add time</a>
+          </Link>
+          <Link href="/clients">
+            <a className="text-sm font-semibold leading-6 text-gray-900">Clients</a>
           </Link>
         </div>
         <div className="lg:flex lg:flex-1 lg:justify-end">

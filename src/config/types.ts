@@ -1,8 +1,10 @@
 export type IdType = number | string;
 export interface ClientType {
+  dbId?: string;
   id: IdType;
   name: string;
   code: string;
+  created: any;
 }
 
 export interface FilterType {
@@ -19,11 +21,16 @@ export interface SiteTypes {
   filters: FilterType[];
 }
 
-export interface RecordType extends Exclude<ClientType, 'id'> {
-  clientId: IdType;
-  to: Date;
-  from: Date;
+export interface NewRecordType {
+  to: any;
+  from: any;
   description: string;
+  clientId: IdType,
+  id: string;
+  name: string;
+  code: string;
   logged: boolean;
+  loggedOn: any;
   paid: boolean;
+  paidOn: any;
 }

@@ -10,8 +10,9 @@ import Label from '~/components/Label';
 import {addRecord} from '~/controllers/global';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
+import {NextPage} from 'next';
 
-const Add = () => {
+const add: NextPage = () => {
   const router = useRouter();
   const [description, setDescription] = useState('');
   const [from, setFrom] = useState(new Date());
@@ -96,4 +97,4 @@ const Add = () => {
   )
 }
 
-export default Add;
+export default add;

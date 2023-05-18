@@ -1,5 +1,7 @@
 import {getApp, getApps, initializeApp} from '@firebase/app';
 import {getFirestore} from '@firebase/firestore';
+import moment from 'moment';
+import config from '~/config/sites';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -26,7 +28,11 @@ try {
   console.log('e', e);
 }
 
+const renderFirestoreTimestamp = (timestamp: any) =>
+  moment(timestamp.toDate()).format(config.momentFormat);
+
 export {
   firestoreDb,
-  timeTracker
+  timeTracker,
+  renderFirestoreTimestamp
 }

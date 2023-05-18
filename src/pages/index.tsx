@@ -1,35 +1,48 @@
 import { NextPage } from 'next'
 import React, {useEffect, useState} from 'react'
-import {FilterType, RecordType} from '~/config/types';
-import {getAllRecords} from '~/controllers/global';
+import {FilterType, NewRecordType} from '~/config/types';
 import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
-import {collection, doc, setDoc} from '@firebase/firestore';
+import {collection, getDocs} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
 
 const IndexView: NextPage = () => {
-  const [records, setRecords] = useState<RecordType[]>([]);
+  const [records, setRecords] = useState<NewRecordType[]>([]);
+  const [filteredRecords, setFilteredRecords] = useState<NewRecordType[]>([]);
   const [filters, setFilters] = useState<FilterType[]>(config.filters);
   const [activeFilter, setActiveFilter] = useState<FilterType | undefined>(undefined);
 
   useEffect(() => {
-    setRecords(getAllRecords());
+    const retrieveAllRecords = async () => {
+      const recordsFromDb: NewRecordType[] = [];
+      const recordsSnapshot = await getDocs(collection(firestoreDb, 'records'));
+      recordsSnapshot.forEach((record: any) => {
+        recordsFromDb.push({
+          ...record.data(),
+          id: record.id
+        })
+      })
+      setRecords(recordsFromDb);
+      setFilteredRecords(recordsFromDb);
+    }
+
+    retrieveAllRecords();
   }, []);
 
   useEffect(() => {
     if(activeFilter?.active === undefined) {
-      setRecords(getAllRecords());
+      setRecords(records);
     } else {
-      const filteredRecords: RecordType[] = [];
-      getAllRecords().forEach(item => {
+      const filterRecords: NewRecordType[] = [];
+      records.forEach(item => {
         if(item[activeFilter.val] === activeFilter?.active) {
-          filteredRecords.push(item);
+          filterRecords.push(item);
         }
       });
 
-      setRecords(filteredRecords.length ? filteredRecords : []);
+      setFilteredRecords(filterRecords.length ? filterRecords : []);
     }
   }, [filters]);
 
@@ -56,53 +69,34 @@ const IndexView: NextPage = () => {
     });
   }
 
-  const createClient = async () => {
-    const client = {
-      id: 1,
-      name: 'Neurocrine',
-      code: 'NEUR0014/49',
-    };
-
-    const newClientRef = doc(collection(firestoreDb, 'clients'));
-    const clientData = await setDoc(newClientRef, client);
-    console.log('clientData', clientData);
-  };
-
   return (
     <div className="container">
-      <button
-        type="button"
-        onClick={() => createClient()}
-        className="bg-gray-100 py-3 px-5"
-      >
-        Create client
-      </button>
       <RenderFilters
         filters={filters}
         onHandleFilter={updatedFilter => handleFilter(updatedFilter)}
         onSetRecords={(clientId) => {
-          const filteredRecords: RecordType[] = [];
-          getAllRecords().forEach(item => {
+          const filterRecords: NewRecordType[] = [];
+          records.forEach(item => {
             console.log(item.clientId, clientId);
             if(item.clientId === clientId) {
-              filteredRecords.push(item);
+              filterRecords.push(item);
             }
           });
 
-          setRecords(filteredRecords.length ? filteredRecords : []);
+          setFilteredRecords(filterRecords.length ? filterRecords : []);
         }}
       />
 
       <table className="container">
         <TableHeader />
         <tbody>
-          {records.length === 0 && (
+          {filteredRecords.length === 0 && (
             <tr>
               <td colSpan={7}>No records found...</td>
             </tr>
           )}
 
-          {records.length > 0 && records.map((record: RecordType) => (
+          {filteredRecords.length > 0 && filteredRecords.map((record: NewRecordType) => (
             <TableRecord
               key={record.id}
               record={record}

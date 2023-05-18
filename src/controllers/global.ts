@@ -1,14 +1,14 @@
-import {IdType, RecordType} from '~/config/types';
+import {IdType, NewRecordType} from '~/config/types';
 import { v4 as uuidv4 } from 'uuid';
 import config from '~/config/sites';
 
-const getRecordsFromStorage = (): RecordType[] => {
+const getRecordsFromStorage = (): NewRecordType[] => {
   return JSON.parse(localStorage.getItem('records')!) || [];
 }
 export const getClientById = (clientId: number) =>
   config.clients.find(client => client.id === clientId);
 
-export const addRecord = (record: RecordType) => {
+export const addRecord = (record: NewRecordType) => {
   const existingRecords = getRecordsFromStorage();
   const clientInfo = getClientById(Number(record.clientId));
 
@@ -43,7 +43,7 @@ export const removeRecord = (id: IdType) => {
   }
 };
 
-export const updateFieldInRecord = (id: IdType, field: any, val: any) => {
+export const updateFieldInRecord = (id: IdType, field: any, val: any): NewRecordType[] => {
   const records = getRecordsFromStorage();
   const search = records.find(record => record.id === id);
 
@@ -59,7 +59,7 @@ export const updateFieldInRecord = (id: IdType, field: any, val: any) => {
   }
 }
 
-export const updateRecord = (id: IdType, record: RecordType) => {
+export const updateRecord = (id: IdType, record: NewRecordType) => {
   const clientInfo = getClientById(Number(record.clientId));
   const records = getRecordsFromStorage();
   const search = findRecordById(id);
