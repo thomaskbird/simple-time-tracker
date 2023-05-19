@@ -17,7 +17,7 @@ export const removeRecord = (id: IdType) => {
   }
 };
 
-export const updateFieldInRecord = async (id: IdType, field: any, val: any): Promise<RecordType> => {
+export const updateFieldInRecord = async (id: IdType, field: any, val: any): void => {
   const timestampToUpdate = field === 'paid' ? 'paidOn' : 'loggedOn';
   const updatedRecordRef = doc(firestoreDb, 'records', id);
   await updateDoc(updatedRecordRef, {
