@@ -34,7 +34,7 @@ const clients: NextPage = () => {
   }, []);
 
   const handleSubmit = async () => {
-    const clientData = await addDoc(collection(firestoreDb, 'clients'), {
+    await addDoc(collection(firestoreDb, 'clients'), {
       name,
       code,
       created: Timestamp.now()

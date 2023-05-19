@@ -52,7 +52,7 @@ const add: NextPage = () => {
       loggedOn: null,
       paid: false,
       paidOn: null
-    });''
+    });
 
     console.log('addedRecord', addedRecord.id);
     router.push('/');

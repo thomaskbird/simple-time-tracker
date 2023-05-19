@@ -1,5 +1,5 @@
 import {IdType, RecordType} from '~/config/types';
-import {doc, updateDoc} from '@firebase/firestore';
+import {doc, Timestamp, updateDoc} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
 
 const getRecordsFromStorage = (): RecordType[] => {
@@ -18,8 +18,10 @@ export const removeRecord = (id: IdType) => {
 };
 
 export const updateFieldInRecord = async (id: IdType, field: any, val: any): Promise<RecordType> => {
+  const timestampToUpdate = field === 'paid' ? 'paidOn' : 'loggedOn';
   const updatedRecordRef = doc(firestoreDb, 'records', id);
   await updateDoc(updatedRecordRef, {
-    [field]: val
+    [field]: val,
+    [timestampToUpdate]: val ? Timestamp.now() : null
   });
 }
