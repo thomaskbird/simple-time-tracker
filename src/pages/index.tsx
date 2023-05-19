@@ -15,6 +15,7 @@ import {
 } from '~/helpers/firebase';
 import moment from 'moment';
 import {query} from '@firebase/database';
+import TableColumn from '~/components/TableColumn';
 
 const handleFiltersActiveState = (filters: FilterType[], updatedFilter: FilterType) => {
   const updatedFilters: FilterType[] = [];
@@ -44,21 +45,21 @@ const IndexView: NextPage = () => {
   const [clients, setClients] = useState<ClientType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const retrieveAllRecords = async () => {
+    const recordsSnapshot =
+      await getDocs(queryAllRecordsOrdered);
+    const recordsFromDb = makeArrayFromSnapshot(recordsSnapshot);
+    setRecords(recordsFromDb);
+    setFilteredRecords(recordsFromDb);
+
+    const clientSnapshot =
+      await getDocs(queryAllClientsOrdered);
+    setClients(makeArrayFromSnapshot(clientSnapshot));
+
+    setIsLoading(false);
+  }
+
   useEffect(() => {
-    const retrieveAllRecords = async () => {
-      const recordsSnapshot =
-        await getDocs(queryAllRecordsOrdered);
-      const recordsFromDb = makeArrayFromSnapshot(recordsSnapshot);
-      setRecords(recordsFromDb);
-      setFilteredRecords(recordsFromDb);
-
-      const clientSnapshot =
-        await getDocs(queryAllClientsOrdered);
-      setClients(makeArrayFromSnapshot(clientSnapshot));
-
-      setIsLoading(false);
-    }
-
     retrieveAllRecords();
   }, []);
 
@@ -162,16 +163,16 @@ const IndexView: NextPage = () => {
             <TableHeader />
             <div>
               {filteredRecords.length === 0 && (
-                <tr>
-                  <td colSpan={7}>No records found...</td>
-                </tr>
+                <div>
+                  <TableColumn>No records found...</TableColumn>
+                </div>
               )}
 
               {filteredRecords.length > 0 && filteredRecords.map((record: RecordType) => (
                 <TableRecord
                   key={record.id}
                   record={record}
-                  onUpdateRecords={newRecords => setRecords(newRecords)}
+                  onUpdateRecords={() => retrieveAllRecords()}
                 />
               ))}
             </div>

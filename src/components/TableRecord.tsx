@@ -3,16 +3,18 @@ import config from '~/config/sites';
 import {RecordType} from '~/config/types';
 import {removeRecord, updateFieldInRecord} from '~/controllers/global';
 import Link from 'next/link';
-import React from 'react';
+import React, {useState} from 'react';
 import TableColumn from '~/components/TableColumn';
 
 interface TableRecordProps {
   record: RecordType;
-  onUpdateRecords(records: RecordType[]): void;
+  onUpdateRecords(): void;
 }
 
 // todo: figure out how we will update single field in record
+// todo: figure out how we will delete a record
 const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const calculateDiff = (diff: number) => {
     return diff / 60;
   }
@@ -34,10 +36,11 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
           type="button"
           className="text-left"
           onClick={() => {
+            setIsLoading(true);
             const confirmRemoveRecord = confirm('Are you sure you want to remove this record?');
             if(confirmRemoveRecord) {
-              const newRecords: RecordType[] = removeRecord(record.id);
-              onUpdateRecords(newRecords);
+              console.log('Still need to code delete document');
+              setIsLoading(false);
             }
           }}
         >
@@ -46,10 +49,13 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
         <Link href={`/edit/${record.id}`}>&#9997; Edit</Link>
         <button
           type="button"
-          className="text-left"
-          onClick={() => {
-            const newRecords: RecordType[] = updateFieldInRecord(record.id, 'logged', !record.logged);
-            onUpdateRecords(newRecords);
+          disabled={isLoading}
+          className="text-left disabled:opacity-20 disabled:cursor-not-allowed"
+          onClick={async () => {
+            setIsLoading(true);
+            await updateFieldInRecord(record.id, 'logged', !record.logged);
+            onUpdateRecords();
+            setIsLoading(false);
           }}
           title="Logged hours"
         >
@@ -57,10 +63,13 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
         </button>
         <button
           type="button"
-          className="text-left"
-          onClick={() => {
-            const newRecords: RecordType[] = updateFieldInRecord(record.id, 'paid', !record.paid);
-            onUpdateRecords(newRecords);
+          disabled={isLoading}
+          className="text-left disabled:opacity-20 disabled:cursor-not-allowed"
+          onClick={async () => {
+            setIsLoading(true);
+            await updateFieldInRecord(record.id, 'paid', !record.paid);
+            onUpdateRecords();
+            setIsLoading(false);
           }}
           title="Paid"
         >
