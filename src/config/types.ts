@@ -33,6 +33,7 @@ export interface RecordType {
   from: any;
   description: string;
   clientId: IdType,
+  isChecked?: boolean;
   id: string;
   name: string;
   code: string;

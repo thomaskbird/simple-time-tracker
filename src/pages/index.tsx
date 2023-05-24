@@ -5,9 +5,8 @@ import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
 import config from '~/config/sites';
-import {getDocs, orderBy, where} from '@firebase/firestore';
+import {getDocs, QuerySnapshot, where} from '@firebase/firestore';
 import {
-  collectionClients,
   collectionRecords,
   makeArrayFromSnapshot,
   queryAllClientsOrdered,
@@ -44,13 +43,15 @@ const IndexView: NextPage = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType | undefined>(undefined);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAllChecked, setIsAllChecked] = useState(false);
 
   const retrieveAllRecords = async () => {
-    const recordsSnapshot =
+    const recordsSnapshot: QuerySnapshot =
       await getDocs(queryAllRecordsOrdered);
     const recordsFromDb = makeArrayFromSnapshot(recordsSnapshot);
-    setRecords(recordsFromDb);
-    setFilteredRecords(recordsFromDb);
+    const recordsFromDbWithChecks = recordsFromDb.map(rec => ({ ...rec, isChecked: false }));
+    setRecords(recordsFromDbWithChecks);
+    setFilteredRecords(recordsFromDbWithChecks);
 
     const clientSnapshot =
       await getDocs(queryAllClientsOrdered);
@@ -160,7 +161,24 @@ const IndexView: NextPage = () => {
           />
 
           <div className="container">
-            <TableHeader />
+            <TableHeader
+              isAllChecked={isAllChecked}
+              onCheckAll={() => {
+
+                const newRecs = [];
+                filteredRecords.forEach(rec => {
+                  newRecs.push({
+                    ...rec,
+                    isChecked: !isAllChecked
+                  })
+                });
+
+                setRecords(newRecs);
+                setFilteredRecords(newRecs);
+
+                setIsAllChecked(!isAllChecked)
+              }}
+            />
             <div>
               {filteredRecords.length === 0 && (
                 <div>
@@ -172,6 +190,22 @@ const IndexView: NextPage = () => {
                 <TableRecord
                   key={record.id}
                   record={record}
+                  onChecked={(recordId, isChecked) => {
+                    const newRecs = [];
+                    filteredRecords.forEach(rec => {
+                      if(rec.id === recordId) {
+                        newRecs.push({
+                          ...rec,
+                          isChecked: isChecked
+                        })
+                      } else {
+                        newRecs.push(rec);
+                      }
+                    });
+
+                    setRecords(newRecs);
+                    setFilteredRecords(newRecs);
+                  }}
                   onUpdateRecords={() => retrieveAllRecords()}
                 />
               ))}

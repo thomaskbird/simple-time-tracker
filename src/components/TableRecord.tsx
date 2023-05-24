@@ -11,11 +11,12 @@ import {firestoreDb} from '~/helpers/firebase';
 interface TableRecordProps {
   record: RecordType;
   onUpdateRecords(): void;
+  onChecked(recordId: string, isChecked: boolean): void;
 }
 
 // todo: figure out how we will update single field in record
 // todo: figure out how we will delete a record
-const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
+const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const calculateDiff = (diff: number) => {
     return diff / 60;
@@ -28,6 +29,9 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
 
   return (
     <div key={record.id} className="flex flex-row">
+      <TableColumn>
+        <input type="checkbox" checked={record.isChecked} onChange={() => onChecked(record.id, !record.isChecked)} />
+      </TableColumn>
       <TableColumn>{record.name}</TableColumn>
       <TableColumn>{record.code}</TableColumn>
       <TableColumn>{record.description}</TableColumn>
