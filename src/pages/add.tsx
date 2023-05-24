@@ -19,8 +19,9 @@ const add: NextPage = () => {
   const [description, setDescription] = useState('');
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
-  const [clientId, setClientId] = useState<undefined | number>(undefined);
+  const [clientId, setClientId] = useState<undefined | string | number>(undefined);
   const [clients, setClients] = useState([]);
+  const [addMore, setAddMore] = useState(false);
 
   useEffect(() => {
     const retrieveAllClients = async () => {
@@ -55,7 +56,13 @@ const add: NextPage = () => {
     });
 
     console.log('addedRecord', addedRecord.id);
-    router.push('/');
+
+    if(addMore) {
+      setDescription('');
+      setClientId('');
+    } else {
+      router.push('/');
+    }
   }
 
   return (
@@ -111,6 +118,13 @@ const add: NextPage = () => {
             <option key={client.id} value={client.id}>{client.name} - {client.code}</option>
           ))}
         </select>
+      </FormGroup>
+
+      <FormGroup isRow={false}>
+        <Label id="addMore">
+          <input type="checkbox" checked={addMore} name="addMore" onChange={() => setAddMore(!addMore)} />
+        </Label>
+        Add more
       </FormGroup>
 
       <div className="flex items-center">

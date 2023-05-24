@@ -5,6 +5,8 @@ import {removeRecord, updateFieldInRecord} from '~/controllers/global';
 import Link from 'next/link';
 import React, {useState} from 'react';
 import TableColumn from '~/components/TableColumn';
+import {deleteDoc, doc} from '@firebase/firestore';
+import {firestoreDb} from '~/helpers/firebase';
 
 interface TableRecordProps {
   record: RecordType;
@@ -18,6 +20,11 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
   const calculateDiff = (diff: number) => {
     return diff / 60;
   }
+
+  const deleteRecord = async (recordId: string | number) => {
+    await deleteDoc(doc(firestoreDb, 'records', recordId));
+    onUpdateRecords();
+  };
 
   return (
     <div key={record.id} className="flex flex-row">
@@ -39,12 +46,13 @@ const TableRecord = ({record, onUpdateRecords}: TableRecordProps) => {
             setIsLoading(true);
             const confirmRemoveRecord = confirm('Are you sure you want to remove this record?');
             if(confirmRemoveRecord) {
-              console.log('Still need to code delete document');
+              setIsLoading(true);
+              deleteRecord(record.id);
               setIsLoading(false);
             }
           }}
         >
-          &#x10102; Remove
+          &#128163; Remove
         </button>
         <Link href={`/edit/${record.id}`}>&#9997; Edit</Link>
         <button
