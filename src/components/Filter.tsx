@@ -27,7 +27,7 @@ const Filter = ({ filter, onChanged }: FilterProps) => {
   }
   return (
     <span
-      className={` bg-white drop-shadow-3xl text-sm py-1 px-2.5 mx-1 cursor-pointer`}
+      className={`bg-white drop-shadow-3xl text-sm py-1 px-2.5 mx-1 cursor-pointer`}
       // drop-shadow-3xl
       onClick={onChanged}
     >

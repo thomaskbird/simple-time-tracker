@@ -15,6 +15,7 @@ import {
 import moment from 'moment';
 import {query} from '@firebase/database';
 import TableColumn from '~/components/TableColumn';
+import BulkActions from '~/components/BulkActions';
 
 const handleFiltersActiveState = (filters: FilterType[], updatedFilter: FilterType) => {
   const updatedFilters: FilterType[] = [];
@@ -160,11 +161,12 @@ const IndexView: NextPage = () => {
             }}
           />
 
+          <BulkActions />
+
           <div className="container">
             <TableHeader
               isAllChecked={isAllChecked}
               onCheckAll={() => {
-
                 const newRecs = [];
                 filteredRecords.forEach(rec => {
                   newRecs.push({

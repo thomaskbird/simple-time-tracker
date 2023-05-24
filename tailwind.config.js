@@ -11,7 +11,7 @@ module.exports = {
       },
       dropShadow: {
         '3xl': '0 10px 15px rgba(0, 0, 0, 0.05)',
-      }
+      },
     },
   },
   plugins: [],
