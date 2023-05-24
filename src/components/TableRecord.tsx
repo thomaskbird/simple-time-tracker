@@ -29,7 +29,7 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
 
   return (
     <div key={record.id} className="flex flex-row">
-      <TableColumn>
+      <TableColumn width="flex-0">
         <input type="checkbox" checked={record.isChecked} onChange={() => onChecked(record.id, !record.isChecked)} />
       </TableColumn>
       <TableColumn>{record.name}</TableColumn>

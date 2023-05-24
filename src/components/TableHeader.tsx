@@ -10,7 +10,7 @@ const TableHeader = ({ isAllChecked, onCheckAll }: TableHeaderProps) => {
   return (
     <div className="bg-gray-500 text-gray-50">
       <div className="flex flex-row">
-        <TableHeaderColumn>
+        <TableHeaderColumn width="flex-0">
           <input type="checkbox" onChange={() => onCheckAll()} />
         </TableHeaderColumn>
         <TableHeaderColumn>Name</TableHeaderColumn>
