@@ -45,32 +45,32 @@ const clients: NextPage = () => {
 
   return (
     <div className="container">
-      <div className="py-10 px-12 bg-gray-100 mb-10">
-        <h3>Clients</h3>
+      <div className="py-5 px-6 bg-gray-100 mb-10">
+        <div className="flex gap-16">
+          <FormGroup>
+            <Label id="name">Name:</Label>
+            <input
+              id="name"
+              name="name"
+              value={name}
+              placeholder="Enter name..."
+              className="py-2.5 px-5 outline-0 drop-shadow-3xl z-0 placeholder-gray-300 text-gray-700"
+              onChange={e => setName(e.target.value)}
+            />
+          </FormGroup>
 
-        <FormGroup>
-          <Label id="name">Name:</Label>
-          <input
-            id="name"
-            name="name"
-            value={name}
-            placeholder="Enter name..."
-            className="py-2.5 px-5 outline-0 drop-shadow-3xl z-0 placeholder-gray-300 text-gray-700"
-            onChange={e => setName(e.target.value)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label id="code">Code:</Label>
-          <input
-            id="code"
-            name="code"
-            value={code}
-            placeholder="Enter code..."
-            className="py-2.5 px-5 outline-0 drop-shadow-3xl z-0 placeholder-gray-300 text-gray-700"
-            onChange={e => setCode(e.target.value)}
-          />
-        </FormGroup>
+          <FormGroup>
+            <Label id="code">Code:</Label>
+            <input
+              id="code"
+              name="code"
+              value={code}
+              placeholder="Enter code..."
+              className="py-2.5 px-5 outline-0 drop-shadow-3xl z-0 placeholder-gray-300 text-gray-700"
+              onChange={e => setCode(e.target.value)}
+            />
+          </FormGroup>
+        </div>
 
         <div className="flex items-center">
           <button
@@ -81,7 +81,7 @@ const clients: NextPage = () => {
             Submit
           </button>
           <Link href="/">
-            <a className="text-gray-400 ml-10">
+            <a className="text-gray-400 ml-10 hover:text-gray-600">
               Cancel
             </a>
           </Link>

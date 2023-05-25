@@ -163,6 +163,18 @@ const IndexView: NextPage = () => {
 
           <BulkActions />
 
+          <button
+            type="button"
+            onClick={() => {
+              const jobCodes = filteredRecords.map(rec => rec.code);
+              const uniqueJobCodes = [...['Job codes:\n'], ...new Set(jobCodes)];
+              console.log(uniqueJobCodes.join('\n'));
+            }}
+            className="bg-white drop-shadow-3xl px-5 py-2 hover:bg-gray-100"
+          >
+            Pull codes
+          </button>
+
           <div className="container">
             <TableHeader
               isAllChecked={isAllChecked}

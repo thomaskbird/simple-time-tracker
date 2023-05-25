@@ -45,7 +45,7 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
       <TableColumn stackChildren width="flex-2x">
         <button
           type="button"
-          className="text-left"
+          className="text-left py-1"
           onClick={() => {
             setIsLoading(true);
             const confirmRemoveRecord = confirm('Are you sure you want to remove this record?');
@@ -58,11 +58,11 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
         >
           &#128163; Remove
         </button>
-        <Link href={`/edit/${record.id}`}>&#9997; Edit</Link>
+        <Link className="py-1" href={`/edit/${record.id}`}>&#9997; Edit</Link>
         <button
           type="button"
           disabled={isLoading}
-          className="text-left disabled:opacity-20 disabled:cursor-not-allowed"
+          className="text-left disabled:opacity-20 disabled:cursor-not-allowed py-1"
           onClick={async () => {
             setIsLoading(true);
             await updateFieldInRecord(record.id, 'logged', !record.logged);
@@ -76,7 +76,7 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
         <button
           type="button"
           disabled={isLoading}
-          className="text-left disabled:opacity-20 disabled:cursor-not-allowed"
+          className="text-left disabled:opacity-20 disabled:cursor-not-allowed py-1"
           onClick={async () => {
             setIsLoading(true);
             await updateFieldInRecord(record.id, 'paid', !record.paid);
