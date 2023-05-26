@@ -16,31 +16,13 @@ import moment from 'moment';
 import {query} from '@firebase/database';
 import TableColumn from '~/components/TableColumn';
 import BulkActions from '~/components/BulkActions';
-
-const handleFiltersActiveState = (filters: FilterType[], updatedFilter: FilterType) => {
-  const updatedFilters: FilterType[] = [];
-  filters.forEach((item: FilterType) => {
-    if(item.id === updatedFilter.id) {
-      updatedFilters.push({
-        ...item,
-        ...updatedFilter,
-        active: updatedFilter.active
-      });
-    } else {
-      updatedFilters.push({
-        ...item,
-        active: undefined
-      });
-    }
-  });
-
-  return updatedFilters;
-}
+import {useTrackerStore} from '~/store/useTrackerStore';
+import {selectFilters} from '~/store/selectors/filters';
 
 const IndexView: NextPage = () => {
+  const filters = useTrackerStore(selectFilters);
   const [records, setRecords] = useState<RecordType[]>([]);
   const [filteredRecords, setFilteredRecords] = useState<RecordType[]>([]);
-  const [filters, setFilters] = useState<FilterType[]>(config.filters);
   const [activeFilter, setActiveFilter] = useState<FilterType | undefined>(undefined);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -130,11 +112,6 @@ const IndexView: NextPage = () => {
     }
   }, [filters]);
 
-  const handleUpdateFiltersState = (filter: FilterType) => {
-    setActiveFilter(filter);
-    setFilters((prevState) => handleFiltersActiveState(prevState, filter));
-  };
-
   return (
     <div className="container">
       {isLoading ? (
@@ -143,8 +120,6 @@ const IndexView: NextPage = () => {
         <>
           <RenderFilters
             clients={clients}
-            filters={filters}
-            onHandleFilter={updatedFilter => handleUpdateFiltersState(updatedFilter)}
             onSetRecords={(clientId) => {
               if(clientId === 'Select client...') {
                 setFilteredRecords(records);

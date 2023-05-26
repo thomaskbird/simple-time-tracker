@@ -1,11 +1,61 @@
-import {FilterType} from '~/config/types';
+import {FilterType, FilterTypes} from '~/config/types';
+import {useTrackerStore} from '~/store/useTrackerStore';
+import {selectFilters, selectSetActiveFilter, selectSetFilters} from '~/store/selectors/filters';
 
 export interface FilterProps {
   filter: FilterType;
-  onChanged(): void;
 }
 
-const Filter = ({ filter, onChanged }: FilterProps) => {
+const manageFilterCurrentState = (active: any, filterType: FilterTypes) => {
+  let filterVal;
+  if(filterType === 'mono') {
+    if(active === undefined) {
+      filterVal = true;
+    } else {
+      filterVal = undefined;
+    }
+  } else {
+    if(active === undefined) {
+      filterVal = true;
+    } else if(active) {
+      filterVal = false;
+    } else {
+      filterVal = undefined;
+    }
+  }
+
+  return filterVal;
+}
+
+const handleFiltersActiveState = (filters: FilterType[], updatedFilter: FilterType) => {
+  const updatedFilters: FilterType[] = [];
+  filters.forEach((item: FilterType) => {
+    if(item.id === updatedFilter.id) {
+      updatedFilters.push({
+        ...item,
+        ...updatedFilter,
+        active: updatedFilter.active
+      });
+    } else {
+      updatedFilters.push({
+        ...item,
+        active: undefined
+      });
+    }
+  });
+
+  return updatedFilters;
+}
+
+const Filter = ({ filter }: FilterProps) => {
+  if(filter.id === 2) {
+    console.log('filter', filter);
+  }
+
+  const setActiveFilter = useTrackerStore(selectSetActiveFilter);
+  const filters = useTrackerStore(selectFilters);
+  const setFilters = useTrackerStore(selectSetFilters);
+
   const generateLabel = () => {
     if(filter.type === 'mono') {
       switch(filter?.active) {
@@ -25,11 +75,21 @@ const Filter = ({ filter, onChanged }: FilterProps) => {
       }
     }
   }
+
   return (
     <span
       className={`bg-white drop-shadow-3xl text-sm py-1 px-2.5 mx-1 cursor-pointer`}
       // drop-shadow-3xl
-      onClick={onChanged}
+      onClick={() => {
+        const newFilterVal = manageFilterCurrentState(filter.active, filter.type);
+        const updatedFilter = {
+          ...filter,
+          active: newFilterVal
+        };
+
+        setActiveFilter(updatedFilter);
+        setFilters(handleFiltersActiveState(filters, updatedFilter));
+      }}
     >
       {generateLabel()}
     </span>
