@@ -1,6 +1,8 @@
 import Filter from '~/components/Filter';
 import React from 'react';
-import {ClientType, FilterType} from '~/config/types';
+import {ClientType} from '~/config/types';
+import {useTrackerStore} from '~/store/useTrackerStore';
+import {selectFilters} from '~/store/selectors/filters';
 
 interface RenderFiltersType {
   clients: ClientType[];
@@ -8,6 +10,8 @@ interface RenderFiltersType {
 }
 
 const RenderFilters = ({ clients, onSetRecords }: RenderFiltersType) => {
+  const filters = useTrackerStore(selectFilters);
+
   return (
     <div className="py-2 px-4">
       <span className="text-gray-400 text-sm">Filters:</span>

@@ -48,10 +48,6 @@ const handleFiltersActiveState = (filters: FilterType[], updatedFilter: FilterTy
 }
 
 const Filter = ({ filter }: FilterProps) => {
-  if(filter.id === 2) {
-    console.log('filter', filter);
-  }
-
   const setActiveFilter = useTrackerStore(selectSetActiveFilter);
   const filters = useTrackerStore(selectFilters);
   const setFilters = useTrackerStore(selectSetFilters);
