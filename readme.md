@@ -9,3 +9,13 @@
 ### Starting Storybook
 
 - Spin up Storybook `yarn run storybook`
+
+### Commit hooks
+
+If you'd like to have commit linting add the following lines to the `package.json` `husky.hooks`:
+
+```json
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+```
