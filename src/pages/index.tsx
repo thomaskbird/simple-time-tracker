@@ -1,10 +1,9 @@
 import { NextPage } from 'next'
 import React, {useEffect, useState} from 'react'
-import {ClientType, FilterType, RecordType} from '~/config/types';
+import {ClientType, RecordType} from '~/config/types';
 import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
-import config from '~/config/sites';
 import {getDocs, QuerySnapshot, where} from '@firebase/firestore';
 import {
   collectionRecords,
@@ -24,6 +23,7 @@ import {
   selectSetFilteredRecords,
   selectSetRecords,
 } from '~/store/selectors/records';
+import {makeNewFilteredArray} from '~/helpers/makeNewArray';
 
 const IndexView: NextPage = () => {
   const filters = useTrackerStore(selectFilters);
@@ -163,13 +163,13 @@ const IndexView: NextPage = () => {
             <TableHeader
               isAllChecked={isAllChecked}
               onCheckAll={() => {
-                const newRecs = [];
-                filteredRecords.forEach(rec => {
-                  newRecs.push({
-                    ...rec,
-                    isChecked: !isAllChecked
-                  })
-                });
+
+                const newRecs: RecordType[] =
+                  makeNewFilteredArray<RecordType>(
+                    filteredRecords,
+                    'isChecked',
+                    !isAllChecked
+                  );
 
                 setRecords(newRecs);
                 setFilteredRecords(newRecs);
