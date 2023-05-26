@@ -17,13 +17,22 @@ import {query} from '@firebase/database';
 import TableColumn from '~/components/TableColumn';
 import BulkActions from '~/components/BulkActions';
 import {useTrackerStore} from '~/store/useTrackerStore';
-import {selectFilters} from '~/store/selectors/filters';
+import {selectActiveFilter, selectFilters} from '~/store/selectors/filters';
+import {
+  selectFilteredRecords,
+  selectRecords,
+  selectSetFilteredRecords,
+  selectSetRecords,
+} from '~/store/selectors/records';
 
 const IndexView: NextPage = () => {
   const filters = useTrackerStore(selectFilters);
-  const [records, setRecords] = useState<RecordType[]>([]);
-  const [filteredRecords, setFilteredRecords] = useState<RecordType[]>([]);
-  const [activeFilter, setActiveFilter] = useState<FilterType | undefined>(undefined);
+  const setRecords = useTrackerStore(selectSetRecords);
+  const setFilteredRecords = useTrackerStore(selectSetFilteredRecords);
+  const records = useTrackerStore(selectRecords);
+  const filteredRecords = useTrackerStore(selectFilteredRecords);
+  const activeFilter = useTrackerStore(selectActiveFilter);
+
   const [clients, setClients] = useState<ClientType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAllChecked, setIsAllChecked] = useState(false);
