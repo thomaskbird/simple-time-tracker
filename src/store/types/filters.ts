@@ -8,3 +8,5 @@ export interface FiltersSlice {
   setActiveFilter: (filter: FilterType) => void;
   setFilters: (filters: FilterType[]) => void;
 }
+
+// test change

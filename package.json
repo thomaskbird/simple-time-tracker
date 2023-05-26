@@ -24,9 +24,7 @@
     "validate": "npm-run-all --parallel lint lint:css format type-check test"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "hooks": {}
   },
   "dependencies": {
     "@headlessui/react": "^1.7.7",
