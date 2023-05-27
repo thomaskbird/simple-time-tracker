@@ -45,6 +45,7 @@ try {
 
 const collectionRecords = collection(firestoreDb, 'records');
 const collectionClients = collection(firestoreDb, 'clients');
+const collectionPayPeriods = collection(firestoreDb, 'periods');
 
 const queryAllRecordsOrdered = query(collectionRecords, orderBy('from', 'desc'));
 
@@ -56,6 +57,7 @@ export {
   renderFirestoreTimestamp,
   collectionRecords,
   collectionClients,
+  collectionPayPeriods,
   queryAllRecordsOrdered,
   queryAllClientsOrdered,
   makeArrayFromSnapshot

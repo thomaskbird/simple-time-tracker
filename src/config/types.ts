@@ -42,3 +42,10 @@ export interface RecordType {
   paid: boolean;
   paidOn: any;
 }
+
+export interface PeriodType {
+  id?: string;
+  to: any;
+  from: any;
+  createdOn: any;
+}

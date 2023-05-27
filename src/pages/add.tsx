@@ -10,8 +10,8 @@ import Label from '~/components/Label';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
 import {NextPage} from 'next';
-import {addDoc, collection, getDocs} from '@firebase/firestore';
-import {firestoreDb} from '~/helpers/firebase';
+import {addDoc, getDocs} from '@firebase/firestore';
+import {collectionRecords} from '~/helpers/firebase';
 import {ClientType} from '~/config/types';
 
 const add: NextPage = () => {
@@ -26,7 +26,7 @@ const add: NextPage = () => {
   useEffect(() => {
     const retrieveAllClients = async () => {
       const clientsFromDb: any = [];
-      const clientSnapshot = await getDocs(collection(firestoreDb, 'clients'));
+      const clientSnapshot = await getDocs(collectionRecords);
       clientSnapshot.forEach((client) => {
         clientsFromDb.push({
           ...client.data(),
@@ -42,7 +42,7 @@ const add: NextPage = () => {
   const handleSubmit = async () => {
     const clientInfoFromDb: ClientType | undefined = clients.find((cl: ClientType) => cl.id === clientId);
 
-    const addedRecord = await addDoc(collection(firestoreDb, 'records'), {
+    const addedRecord = await addDoc(collectionRecords, {
       to: to,
       from: from,
       description: description,
@@ -114,7 +114,7 @@ const add: NextPage = () => {
           className="p-2.5 outline-0 drop-shadow-3xl text-gray-700"
         >
           <option>Select client...</option>
-          {clients.map(client => (
+          {clients.map((client: ClientType) => (
             <option key={client.id} value={client.id}>{client.name} - {client.code}</option>
           ))}
         </select>

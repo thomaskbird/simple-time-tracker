@@ -14,6 +14,9 @@ const Header = () => {
           <Link href="/add">
             <a className={HeaderLinkStyles}>Add time</a>
           </Link>
+          <Link href="/pay-period">
+            <a className={HeaderLinkStyles}>Pay periods</a>
+          </Link>
           <Link href="/clients">
             <a className={HeaderLinkStyles}>Clients</a>
           </Link>

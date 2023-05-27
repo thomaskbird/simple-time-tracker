@@ -9,12 +9,18 @@ import {useRouter} from 'next/router';
 import {ClientType} from '~/config/types';
 import TableHeaderColumn from '~/components/TableHeaderColumn';
 import TableColumn from '~/components/TableColumn';
+import {useTrackerStore} from '~/store/useTrackerStore';
+import {selectClients, selectSetClients} from '~/store/selectors/clients';
+import moment from 'moment';
+import config from '~/config/sites';
 
 const clients: NextPage = () => {
   const router = useRouter();
+  const clients = useTrackerStore(selectClients);
+  const setClients = useTrackerStore(selectSetClients);
+
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
-  const [clients, setClients] = useState([]);
 
   useEffect(() => {
     const retrieveAllClients = async () => {
@@ -103,7 +109,7 @@ const clients: NextPage = () => {
             <div key={client.id} className="flex flex-row">
               <TableColumn>{client.name}</TableColumn>
               <TableColumn>{client.code}</TableColumn>
-              <TableColumn>{renderFirestoreTimestamp(client.created)}</TableColumn>
+              <TableColumn>{moment(client.created).format(config.momentFormat)}</TableColumn>
               <TableColumn>TEST</TableColumn>
             </div>
           ))}
