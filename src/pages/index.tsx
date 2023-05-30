@@ -23,7 +23,7 @@ import {
   selectSetFilteredRecords,
   selectSetRecords,
 } from '~/store/selectors/records';
-import {makeNewFilteredArray} from '~/helpers/makeNewArray';
+import {makeNewFilteredArray, makeNewFilteredArrayWithUpdatedVal} from '~/helpers/makeNewArray';
 
 const IndexView: NextPage = () => {
   const filters = useTrackerStore(selectFilters);
@@ -189,17 +189,13 @@ const IndexView: NextPage = () => {
                   key={record.id}
                   record={record}
                   onChecked={(recordId, isChecked) => {
-                    const newRecs = [];
-                    filteredRecords.forEach(rec => {
-                      if(rec.id === recordId) {
-                        newRecs.push({
-                          ...rec,
-                          isChecked: isChecked
-                        })
-                      } else {
-                        newRecs.push(rec);
-                      }
-                    });
+                    const newRecs: RecordType[] = makeNewFilteredArrayWithUpdatedVal(
+                      filteredRecords,
+                      'id',
+                      'isChecked',
+                      recordId,
+                      isChecked
+                    );
 
                     setRecords(newRecs);
                     setFilteredRecords(newRecs);

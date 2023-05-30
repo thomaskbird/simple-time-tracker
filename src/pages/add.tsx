@@ -13,14 +13,18 @@ import {NextPage} from 'next';
 import {addDoc, getDocs} from '@firebase/firestore';
 import {collectionRecords} from '~/helpers/firebase';
 import {ClientType} from '~/config/types';
+import {useTrackerStore} from '~/store/useTrackerStore';
+import {selectClients, selectSetClients} from '~/store/selectors/clients';
 
 const add: NextPage = () => {
   const router = useRouter();
+  const clients = useTrackerStore(selectClients);
+  const setClients = useTrackerStore(selectSetClients);
+
   const [description, setDescription] = useState('');
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
   const [clientId, setClientId] = useState<undefined | string | number>(undefined);
-  const [clients, setClients] = useState([]);
   const [addMore, setAddMore] = useState(false);
 
   useEffect(() => {

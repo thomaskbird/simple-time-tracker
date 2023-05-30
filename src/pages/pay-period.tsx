@@ -89,9 +89,9 @@ const PayPeriod: NextPage = () => {
       {periods.length > 0 && periods.map(period => {
         return (
           <div className="flex justify-between bg-white" key={period.id}>
-            <span>{moment(period.from).format(config.momentFormat)}</span>
-            <span>{moment(period.to).format(config.momentFormat)}</span>
-            <span>{moment(period.createdOn).format(config.momentFormat)}</span>
+            <span>{moment(period.from.toDate()).format(config.momentFormat)}</span>
+            <span>{moment(period.to.toDate()).format(config.momentFormat)}</span>
+            <span>{moment(period.createdOn.toDate()).format(config.momentFormat)}</span>
           </div>
         );
       })}

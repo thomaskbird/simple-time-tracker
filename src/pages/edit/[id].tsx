@@ -76,7 +76,7 @@ const Edit = () => {
 
   const handleUpdate = async () => {
     // updateRecord(id!, { to, from, description, clientId, paid, logged });
-    const updatedRecordRef = doc(firestoreDb, 'records', queryId);
+    const updatedRecordRef = doc(firestoreDb, 'records', id);
 
     const client: ClientType = clients.find((c: ClientType) => c.id === Number(clientId)) || {} as ClientType;
 

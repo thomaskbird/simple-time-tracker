@@ -9,3 +9,20 @@ export function makeNewFilteredArray<T>(arr: T[], field: keyof T, val: any) {
 
   return newArr;
 }
+
+export function makeNewFilteredArrayWithUpdatedVal<T>(arr: T[], compareField: keyof  T, field: keyof T, target: string, val: any) {
+  const newArr: T[] = [];
+
+  arr.forEach(item => {
+    if(item[compareField] === target) {
+      newArr.push({
+        ...item,
+        [field]: val
+      });
+    } else {
+      newArr.push(item);
+    }
+  });
+
+  return newArr;
+}

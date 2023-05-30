@@ -20,5 +20,12 @@ export const useTrackerStore = create(
     }),
   ), {
     name: 'time-tracker',
+    // You should be same keys or use merge and migrate functions see zustand docs for details
+    partialize: (state) => ({
+      filterState: state.filtersState,
+      recordsState: state.recordsState,
+      periodState: state.periodsState,
+      clientsState: state.clientsState
+    }),
   }),
 );
