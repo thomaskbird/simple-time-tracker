@@ -1,43 +1,25 @@
 import {NextPage} from 'next';
 import Label from '~/components/Label';
 import FormGroup from '~/components/FormGroup';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Link from 'next/link';
-import {addDoc, collection, getDocs, Timestamp} from '@firebase/firestore';
-import {firestoreDb, renderFirestoreTimestamp} from '~/helpers/firebase';
+import {addDoc, collection, Timestamp} from '@firebase/firestore';
+import {firestoreDb} from '~/helpers/firebase';
 import {useRouter} from 'next/router';
 import {ClientType} from '~/config/types';
 import TableHeaderColumn from '~/components/TableHeaderColumn';
 import TableColumn from '~/components/TableColumn';
 import {useTrackerStore} from '~/store/useTrackerStore';
-import {selectClients, selectSetClients} from '~/store/selectors/clients';
+import {selectClients} from '~/store/selectors/clients';
 import moment from 'moment';
 import config from '~/config/sites';
 
 const clients: NextPage = () => {
   const router = useRouter();
   const clients = useTrackerStore(selectClients);
-  const setClients = useTrackerStore(selectSetClients);
 
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
-
-  useEffect(() => {
-    const retrieveAllClients = async () => {
-      const clientsFromDb: any = [];
-      const clientSnapshot = await getDocs(collection(firestoreDb, 'clients'));
-      clientSnapshot.forEach((client) => {
-        clientsFromDb.push({
-          ...client.data(),
-          id: client.id,
-        })
-      });
-
-      setClients(clientsFromDb);
-    }
-
-    retrieveAllClients();
-  }, []);
 
   const handleSubmit = async () => {
     await addDoc(collection(firestoreDb, 'clients'), {

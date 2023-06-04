@@ -47,6 +47,8 @@ const collectionRecords = collection(firestoreDb, 'records');
 const collectionClients = collection(firestoreDb, 'clients');
 const collectionPayPeriods = collection(firestoreDb, 'periods');
 
+const queryAllPayPeriodsOrdered = query(collectionPayPeriods, orderBy('from', 'desc'));
+
 const queryAllRecordsOrdered = query(collectionRecords, orderBy('from', 'desc'));
 
 const queryAllClientsOrdered = query(collectionClients, orderBy('created', 'desc'));
@@ -58,6 +60,7 @@ export {
   collectionRecords,
   collectionClients,
   collectionPayPeriods,
+  queryAllPayPeriodsOrdered,
   queryAllRecordsOrdered,
   queryAllClientsOrdered,
   makeArrayFromSnapshot

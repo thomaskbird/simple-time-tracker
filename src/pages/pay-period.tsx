@@ -1,9 +1,9 @@
 import {NextPage} from 'next';
-import {addDoc, getDocs, Timestamp} from '@firebase/firestore';
+import {addDoc, getDocs, QuerySnapshot, Timestamp} from '@firebase/firestore';
 import {useEffect, useState} from 'react';
 import {useTrackerStore} from '~/store/useTrackerStore';
 import {selectPeriods, selectSetPeriods} from '~/store/selectors/periods';
-import {collectionPayPeriods, makeArrayFromSnapshot} from '~/helpers/firebase';
+import {collectionPayPeriods, makeArrayFromSnapshot, queryAllPayPeriodsOrdered} from '~/helpers/firebase';
 import FormGroup from '~/components/FormGroup';
 import Label from '~/components/Label';
 import DateTimePicker from 'react-datetime-picker';
@@ -24,7 +24,8 @@ const PayPeriod: NextPage = () => {
 
   useEffect(() => {
     const retrievePeriods = async () => {
-      const periodsSnapshot = await getDocs(collectionPayPeriods);
+      const periodsSnapshot: QuerySnapshot =
+        await getDocs(queryAllPayPeriodsOrdered);
       const periodsFromDb = makeArrayFromSnapshot(periodsSnapshot);
       console.log('periodsFromDb', periodsFromDb);
       setPeriods(periodsFromDb);

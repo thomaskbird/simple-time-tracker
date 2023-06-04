@@ -3,14 +3,14 @@ import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import config from '~/config/sites';
 import FormGroup from '~/components/FormGroup';
 import Label from '~/components/Label';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
 import {NextPage} from 'next';
-import {addDoc, getDocs} from '@firebase/firestore';
+import {addDoc} from '@firebase/firestore';
 import {collectionRecords} from '~/helpers/firebase';
 import {ClientType} from '~/config/types';
 import {useTrackerStore} from '~/store/useTrackerStore';
@@ -18,31 +18,16 @@ import {selectClients, selectSetClients} from '~/store/selectors/clients';
 
 const add: NextPage = () => {
   const router = useRouter();
-  const clients = useTrackerStore(selectClients);
   const setClients = useTrackerStore(selectSetClients);
 
+  const clients = useTrackerStore(selectClients);
+console.log('clients', clients);
   const [description, setDescription] = useState('');
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
   const [clientId, setClientId] = useState<undefined | string | number>(undefined);
   const [addMore, setAddMore] = useState(false);
 
-  useEffect(() => {
-    const retrieveAllClients = async () => {
-      const clientsFromDb: any = [];
-      const clientSnapshot = await getDocs(collectionRecords);
-      clientSnapshot.forEach((client) => {
-        clientsFromDb.push({
-          ...client.data(),
-          id: client.id,
-        })
-      });
-
-      setClients(clientsFromDb);
-    }
-
-    retrieveAllClients();
-  }, []);
   const handleSubmit = async () => {
     const clientInfoFromDb: ClientType | undefined = clients.find((cl: ClientType) => cl.id === clientId);
 
