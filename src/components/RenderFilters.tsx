@@ -26,7 +26,7 @@ const RenderFilters = ({ clients, onSetRecords }: RenderFiltersType) => {
         id="billing"
         name="billing"
         onChange={e=> onSetRecords(e.target.value)}
-        className="p-2.5 outline-0 drop-shadow-3xl text-gray-700"
+        className="w-96 p-2.5 outline-0 drop-shadow-3xl text-gray-700"
       >
         <option>Select client...</option>
         {clients.map(client => (

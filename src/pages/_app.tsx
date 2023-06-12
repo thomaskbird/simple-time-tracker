@@ -10,6 +10,7 @@ import {collection, getDocs} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
 import {useTrackerStore} from '~/store/useTrackerStore';
 import {selectClients, selectSetClients} from '~/store/selectors/clients';
+import HydrateZustand from '~/components/HydrateZustand';
 
 const COMPONENT_NAME = 'App';
 
@@ -37,14 +38,16 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   }, []);
 
   return (
-    <Provider store={appStore}>
-      <Header/>
-      <div className={`${COMPONENT_NAME}`}>
-        <div className="page-content container">
-          <Component {...pageProps} />
+    <HydrateZustand>
+      <Provider store={appStore}>
+        <Header/>
+        <div className={`${COMPONENT_NAME}`}>
+          <div className="page-content container">
+            <Component {...pageProps} />
+          </div>
         </div>
-      </div>
-    </Provider>
+      </Provider>
+    </HydrateZustand>
   );
 }
 
