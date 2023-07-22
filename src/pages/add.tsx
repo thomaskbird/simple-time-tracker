@@ -102,7 +102,7 @@ const add: NextPage = () => {
           className="p-2.5 outline-0 drop-shadow-3xl text-gray-700"
         >
           <option>Select client...</option>
-          {sortByKey(clients, 'name').map((client: ClientType) => (
+          {clients.length && sortByKey(clients, 'name').map((client: ClientType) => (
             <option key={client.id} value={client.id}>{client.name} - {client.code}</option>
           ))}
         </select>
