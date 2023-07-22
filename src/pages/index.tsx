@@ -7,7 +7,6 @@ import TableRecord from '~/components/TableRecord';
 import {getDocs, QuerySnapshot, where} from '@firebase/firestore';
 import {
   collectionRecords,
-  makeArrayFromSnapshot,
   queryAllClientsOrdered,
   queryAllRecordsOrdered
 } from '~/helpers/firebase';
@@ -23,7 +22,7 @@ import {
   selectSetFilteredRecords,
   selectSetRecords,
 } from '~/store/selectors/records';
-import {makeNewFilteredArray, makeNewFilteredArrayWithUpdatedVal} from '~/helpers/makeNewArray';
+import {makeArrayFromSnapshot, makeNewFilteredArray, makeNewFilteredArrayWithUpdatedVal} from '~/helpers/makeNewArray';
 
 const IndexView: NextPage = () => {
   const filters = useTrackerStore(selectFilters);

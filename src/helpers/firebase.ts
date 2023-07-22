@@ -3,6 +3,7 @@ import {collection, getFirestore, orderBy} from '@firebase/firestore';
 import moment from 'moment';
 import config from '~/config/sites';
 import {query} from '@firebase/database';
+import {FirestoreDatabase} from '@firebase/firestore-compat/dist/src/index.console';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -16,19 +17,7 @@ const firebaseConfig = {
 const renderFirestoreTimestamp = (timestamp: any) =>
   moment(timestamp.toDate()).format(config.momentFormat);
 
-const makeArrayFromSnapshot = (snap) => {
-  const data: any[] = [];
-  snap.forEach((item: any) => {
-    data.push({
-      ...item.data(),
-      id: item.id
-    });
-  })
-
-  return data;
-}
-
-let firestoreDb = null;
+let firestoreDb: FirestoreDatabase | null = null;
 let timeTracker = null;
 
 try {
@@ -62,6 +51,5 @@ export {
   collectionPayPeriods,
   queryAllPayPeriodsOrdered,
   queryAllRecordsOrdered,
-  queryAllClientsOrdered,
-  makeArrayFromSnapshot
+  queryAllClientsOrdered
 }

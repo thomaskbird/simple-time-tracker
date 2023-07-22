@@ -3,7 +3,7 @@ import {addDoc, getDocs, QuerySnapshot, Timestamp} from '@firebase/firestore';
 import {useEffect, useState} from 'react';
 import {useTrackerStore} from '~/store/useTrackerStore';
 import {selectPeriods, selectSetPeriods} from '~/store/selectors/periods';
-import {collectionPayPeriods, makeArrayFromSnapshot, queryAllPayPeriodsOrdered} from '~/helpers/firebase';
+import {collectionPayPeriods, queryAllPayPeriodsOrdered} from '~/helpers/firebase';
 import FormGroup from '~/components/FormGroup';
 import Label from '~/components/Label';
 import DateTimePicker from 'react-datetime-picker';
@@ -12,8 +12,8 @@ import config from '~/config/sites';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
-import formatTimestamp from '~/helpers/formatTimestamp';
 import moment from 'moment';
+import {makeArrayFromSnapshot} from '~/helpers/makeNewArray';
 
 const PayPeriod: NextPage = () => {
   const periods = useTrackerStore(selectPeriods);

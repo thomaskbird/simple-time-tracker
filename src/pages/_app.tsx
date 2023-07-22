@@ -11,6 +11,7 @@ import {firestoreDb} from '~/helpers/firebase';
 import {useTrackerStore} from '~/store/useTrackerStore';
 import {selectClients, selectSetClients} from '~/store/selectors/clients';
 import HydrateZustand from '~/components/HydrateZustand';
+import {retrieveAllClients} from '~/helpers/firestore';
 
 const COMPONENT_NAME = 'App';
 
@@ -19,21 +20,14 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const setClients = useTrackerStore(selectSetClients);
 
   useEffect(() => {
-    const retrieveAllClients = async () => {
-      const clientsFromDb: any = [];
-      const clientSnapshot = await getDocs(collection(firestoreDb, 'clients'));
-      clientSnapshot.forEach((client) => {
-        clientsFromDb.push({
-          ...client.data(),
-          id: client.id,
-        })
-      });
-
+    const goGetClientsFromDb = async () => {
+      const clientsFromDb = await retrieveAllClients();
       setClients(clientsFromDb);
     }
-
+    // todo: figure out how to appropriately trigger when it should refetch clients
     if(clients.length === 0) {
-      retrieveAllClients();
+      console.log('retrieveAllClients()');
+      goGetClientsFromDb();
     }
   }, []);
 

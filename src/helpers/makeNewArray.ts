@@ -1,3 +1,15 @@
+export function makeArrayFromSnapshot<T>(snap: T[]) {
+  const data: T[] = [];
+  snap.forEach((item: any) => {
+    data.push({
+      ...item.data(),
+      id: item.id
+    });
+  })
+
+  return data;
+}
+
 export function makeNewFilteredArray<T>(arr: T[], field: keyof T, val: any) {
   const newArr: T[] = [];
   arr.forEach(item => {

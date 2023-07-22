@@ -5,30 +5,35 @@ import React, {useState} from 'react';
 import Link from 'next/link';
 import {addDoc, collection, Timestamp} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
-import {useRouter} from 'next/router';
 import {ClientType} from '~/config/types';
 import TableHeaderColumn from '~/components/TableHeaderColumn';
 import TableColumn from '~/components/TableColumn';
 import {useTrackerStore} from '~/store/useTrackerStore';
-import {selectClients} from '~/store/selectors/clients';
+import {selectClients, selectSetClients} from '~/store/selectors/clients';
 import moment from 'moment';
 import config from '~/config/sites';
+import {retrieveAllClients} from '~/helpers/firestore';
 
 const clients: NextPage = () => {
-  const router = useRouter();
   const clients = useTrackerStore(selectClients);
+  const setClients = useTrackerStore(selectSetClients);
 
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
 
   const handleSubmit = async () => {
-    await addDoc(collection(firestoreDb, 'clients'), {
+    const createdRef = await addDoc(collection(firestoreDb, 'clients'), {
       name,
       code,
       created: Timestamp.now()
     });
 
-    router.push('/');
+    if(createdRef.id) {
+      setName('');
+      setCode('');
+      const clientsFromDb = await retrieveAllClients();
+      setClients(clientsFromDb);
+    }
   }
 
   return (

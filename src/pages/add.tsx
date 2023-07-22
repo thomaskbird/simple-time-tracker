@@ -15,6 +15,7 @@ import {collectionRecords} from '~/helpers/firebase';
 import {ClientType} from '~/config/types';
 import {useTrackerStore} from '~/store/useTrackerStore';
 import {selectClients} from '~/store/selectors/clients';
+import sortByKey from '~/helpers/sortByKey';
 
 const add: NextPage = () => {
   const router = useRouter();
@@ -101,7 +102,7 @@ const add: NextPage = () => {
           className="p-2.5 outline-0 drop-shadow-3xl text-gray-700"
         >
           <option>Select client...</option>
-          {clients.map((client: ClientType) => (
+          {sortByKey(clients, 'name').map((client: ClientType) => (
             <option key={client.id} value={client.id}>{client.name} - {client.code}</option>
           ))}
         </select>
