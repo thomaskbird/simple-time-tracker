@@ -23,6 +23,7 @@ import {
   selectSetRecords,
 } from '~/store/selectors/records';
 import {makeArrayFromSnapshot, makeNewFilteredArray, makeNewFilteredArrayWithUpdatedVal} from '~/helpers/makeNewArray';
+import TableTotals from '~/components/TableTotals';
 
 const IndexView: NextPage = () => {
   const filters = useTrackerStore(selectFilters);
@@ -41,6 +42,7 @@ const IndexView: NextPage = () => {
       await getDocs(queryAllRecordsOrdered);
     const recordsFromDb = makeArrayFromSnapshot(recordsSnapshot);
     const recordsFromDbWithChecks = recordsFromDb.map(rec => ({ ...rec, isChecked: false }));
+    console.log('recordsFromDbWithChecks', recordsFromDbWithChecks);
     setRecords(recordsFromDbWithChecks);
     setFilteredRecords(recordsFromDbWithChecks);
 
@@ -49,6 +51,17 @@ const IndexView: NextPage = () => {
     setClients(makeArrayFromSnapshot(clientSnapshot));
 
     setIsLoading(false);
+  }
+
+  const handleBulkAction = (field: keyof RecordType, val: any) => {
+    const checkedRecords = filteredRecords.filter(record => record.isChecked);
+
+    if(checkedRecords.length) {
+      const updatedRecords = makeNewFilteredArray(checkedRecords, field, val);
+      console.log('updatedRecords', field, val, updatedRecords);
+    } else {
+      alert('You have to select at least one record to use this action');
+    }
   }
 
   useEffect(() => {
@@ -144,7 +157,26 @@ const IndexView: NextPage = () => {
             }}
           />
 
-          <BulkActions />
+          <BulkActions
+            onBulkAction={(selectedText: string) => {
+              const areYouSure = confirm(`Are you sure you want to run this bulk action of ${selectedText}?`);
+              if(areYouSure) {
+                console.log('executeBulkAction()s', selectedText, filteredRecords.filter(record => record.isChecked));
+
+                if(selectedText === 'Mark Logged') {
+                  handleBulkAction('logged', true);
+                } else if(selectedText === 'Mark Unlogged') {
+                  handleBulkAction('logged', false);
+                } else if(selectedText === 'Mark Paid') {
+                  handleBulkAction('paid', true);
+                } else {
+                  handleBulkAction('paid', false);
+                }
+              } else {
+                alert('You must confirm this action before proceeding');
+              }
+            }}
+          />
 
           <button
             type="button"
@@ -202,6 +234,8 @@ const IndexView: NextPage = () => {
                   onUpdateRecords={() => retrieveAllRecords()}
                 />
               ))}
+
+              <TableTotals records={filteredRecords} />
             </div>
           </div>
         </>

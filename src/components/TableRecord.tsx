@@ -7,6 +7,7 @@ import React, {useState} from 'react';
 import TableColumn from '~/components/TableColumn';
 import {deleteDoc, doc} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
+import calculateDiff from '~/helpers/calculateDiff';
 
 interface TableRecordProps {
   record: RecordType;
@@ -18,9 +19,6 @@ interface TableRecordProps {
 // todo: figure out how we will delete a record
 const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const calculateDiff = (diff: number) => {
-    return diff / 60;
-  }
 
   const deleteRecord = async (recordId: string | number) => {
     await deleteDoc(doc(firestoreDb, 'records', recordId));
@@ -37,7 +35,7 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
       <TableColumn>{record.description}</TableColumn>
       <TableColumn>{moment(record.from.toDate()).format(config.momentFormat)}</TableColumn>
       <TableColumn>{moment(record.to.toDate()).format(config.momentFormat)}</TableColumn>
-      <TableColumn>{calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes'))}hrs</TableColumn>
+      <TableColumn>{calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes')).toFixed(1)}hrs</TableColumn>
       <TableColumn stackChildren>
         <p className={record.logged ? 'text-green-400' : 'text-rose-400'}>{record.logged ? 'Logged' : 'Unlogged'}</p>
         <p className={record.paid ? 'text-green-400' : 'text-rose-400'}>{record.paid ? 'Paid' : 'Unpaid'}</p>

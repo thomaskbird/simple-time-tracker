@@ -1,10 +1,10 @@
 import {useState} from 'react';
 
+export type HandleBulkSelectionType = 'logged' | 'unlogged' | 'paid' | 'unpaid';
+
 interface BulkActionsProps {
-
+  onBulkAction(selectedText: HandleBulkSelectionType): void;
 }
-
-type HandleBulkSelectionType = 'logged' | 'unlogged' | 'paid' | 'unpaid';
 
 interface ActionType {
   id: HandleBulkSelectionType,
@@ -31,24 +31,18 @@ const actions: ActionType[] = [
 ];
 
 const buttonClasses = 'outline-0 text-gray-400 text-left hover:bg-gray-50 py-2 px-9';
-const BulkActions = ({}: BulkActionsProps) => {
+const BulkActions = ({
+  onBulkAction,
+}: BulkActionsProps) => {
   const [active, setActive] = useState(false);
-  const [selectedText, setSelectedText] = useState('');
-
-  const executeBulkAction = () => {
-    const areYouSure = confirm(`Are you sure you want to run this bulk action of ${selectedText}?`);
-    if(areYouSure) {
-      console.log('executeBulkAction()');
-    } else {
-      alert('You must confirm this action before proceeding');
-    }
-  }
+  // @ts-ignore
+  const [selectedText, setSelectedText] = useState<HandleBulkSelectionType>('');
 
   const handleBulkSelection = (actionType: HandleBulkSelectionType) => {
-    const txt = actions.find(action => action.id === actionType);
+    const txt: ActionType = actions.find(action => action.id === actionType)!;
     console.log('handleBulkSelection(action)', txt);
     setActive(false);
-    setSelectedText(txt!.text);
+    setSelectedText(txt!.text as HandleBulkSelectionType);
   }
 
   return (
@@ -66,6 +60,7 @@ const BulkActions = ({}: BulkActionsProps) => {
       <div className={`bg-white py-1 ${active ? 'flex flex-col' : 'hidden'}`}>
         {actions.map(action => (
           <button
+            key={action.id}
             type="button"
             className={buttonClasses}
             onClick={() => handleBulkSelection(action.id)}
@@ -77,7 +72,13 @@ const BulkActions = ({}: BulkActionsProps) => {
       <button
         type="button"
         className="text-green-700 absolute top-3 right-6 hover:underline"
-        onClick={() => executeBulkAction()}
+        onClick={() => {
+          if(!selectedText) {
+            alert('You must select a bulk action first');
+          } else {
+            onBulkAction(selectedText)
+          }
+        }}
       >
         Execute
       </button>

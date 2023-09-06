@@ -12,7 +12,7 @@
   "scripts": {
     "build": "next build",
     "build-storybook": "build-storybook",
-    "dev": "next dev -p 4000",
+    "dev": "next dev -p 4001",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|graphql|mdx)\"",
     "lint": "eslint --cache --ext .js,.ts,.tsx ./ --fix",
     "lint:css": "stylelint './**/*.js' './**/*.jsx' './**/*.tsx' './**/*.ts'",

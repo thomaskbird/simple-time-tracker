@@ -12,6 +12,7 @@ import {collection, doc, getDoc, getDocs, updateDoc} from '@firebase/firestore';
 import {firestoreDb} from '~/helpers/firebase';
 import Link from 'next/link';
 import {ClientType} from '~/config/types';
+import sortByKey from '~/helpers/sortByKey';
 
 const Edit = () => {
   const router = useRouter();
@@ -78,9 +79,11 @@ const Edit = () => {
     // updateRecord(id!, { to, from, description, clientId, paid, logged });
     const updatedRecordRef = doc(firestoreDb, 'records', id);
 
-    const client: ClientType = clients.find((c: ClientType) => c.id === Number(clientId)) || {} as ClientType;
+    const client: ClientType = clients.find((c: ClientType) => c.dbId === clientId) || {} as ClientType;
 
-    await updateDoc(updatedRecordRef, {
+    console.log('client', clients, clientId, client);
+
+    let dataToSend = {
       to: to,
       from: from,
       description: description,
@@ -91,7 +94,19 @@ const Edit = () => {
       loggedOn: loggedOn,
       paid: paid,
       paidOn: paidOn
-    });
+    };
+
+    if(logged) {
+      dataToSend.loggedOn = loggedOn;
+    }
+
+    if(paid) {
+      dataToSend.paidOn = paidOn;
+    }
+
+    console.log('dataToSend', dataToSend);
+
+    await updateDoc(updatedRecordRef, dataToSend);
     router.push('/');
   }
 
@@ -148,8 +163,8 @@ const Edit = () => {
               className="p-2.5 outline-0 drop-shadow-3xl text-gray-700"
             >
               <option>Select client...</option>
-              {clients.map((client: ClientType) => (
-                <option key={client.id} value={client.id}>{client.name} - {client.code}</option>
+              {sortByKey(clients, 'code').map((client: ClientType) => (
+                <option key={client.id} value={client.dbId}>{client.code} - {client.name}</option>
               ))}
             </select>
           </FormGroup>
