@@ -4,9 +4,10 @@ import {ClientType, RecordType} from '~/config/types';
 import RenderFilters from '~/components/RenderFilters';
 import TableHeader from '~/components/TableHeader';
 import TableRecord from '~/components/TableRecord';
-import {getDocs, QuerySnapshot, where} from '@firebase/firestore';
+import {doc, getDocs, QuerySnapshot, Timestamp, where, writeBatch} from '@firebase/firestore';
 import {
   collectionRecords,
+  firestoreDb,
   queryAllClientsOrdered,
   queryAllRecordsOrdered
 } from '~/helpers/firebase';
@@ -24,6 +25,8 @@ import {
 } from '~/store/selectors/records';
 import {makeArrayFromSnapshot, makeNewFilteredArray, makeNewFilteredArrayWithUpdatedVal} from '~/helpers/makeNewArray';
 import TableTotals from '~/components/TableTotals';
+import config from '~/config/sites';
+import calculateDiff from '~/helpers/calculateDiff';
 
 const IndexView: NextPage = () => {
   const filters = useTrackerStore(selectFilters);
@@ -53,12 +56,24 @@ const IndexView: NextPage = () => {
     setIsLoading(false);
   }
 
-  const handleBulkAction = (field: keyof RecordType, val: any) => {
+  const handleBulkAction = async (field: keyof RecordType, val: any) => {
     const checkedRecords = filteredRecords.filter(record => record.isChecked);
+    const checkedRecordsIds = checkedRecords.map(rec => rec.id);
 
-    if(checkedRecords.length) {
-      const updatedRecords = makeNewFilteredArray(checkedRecords, field, val);
-      console.log('updatedRecords', field, val, updatedRecords);
+    if(checkedRecordsIds.length) {
+      const batch = writeBatch(firestoreDb);
+
+      checkedRecordsIds.forEach((id) => {
+        const docRef = doc(firestoreDb, 'records', id);
+        console.log('docRef', docRef, field, val, `${field}On`, Timestamp.now())
+        batch.update(docRef, {
+          [field]: val,
+          [`${field}On`]: Timestamp.now()
+        });
+      });
+
+      await batch.commit();
+      retrieveAllRecords();
     } else {
       alert('You have to select at least one record to use this action');
     }
@@ -178,17 +193,50 @@ const IndexView: NextPage = () => {
             }}
           />
 
-          <button
-            type="button"
-            onClick={() => {
-              const jobCodes = filteredRecords.map(rec => rec.code);
-              const uniqueJobCodes = [...['Job codes:\n'], ...new Set(jobCodes)];
-              console.log(uniqueJobCodes.join('\n'));
-            }}
-            className="bg-white drop-shadow-3xl px-5 py-2 hover:bg-gray-100"
-          >
-            Pull codes
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={() => {
+                const jobCodes = filteredRecords.map(rec => rec.code);
+                const uniqueJobCodes = [...['Job codes:\n'], ...new Set(jobCodes)];
+                console.log(uniqueJobCodes.join('\n'));
+              }}
+              className="bg-white drop-shadow-3xl px-5 py-2 hover:bg-gray-100"
+            >
+              Pull codes
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                let calculatedData: any = {};
+                const allDates = filteredRecords.map(
+                  rec => moment(rec.from.toDate()).format(config.momentFormatWoTimestamp)
+                );
+                const uniqueDates = [...new Set(allDates)];
+
+                uniqueDates.forEach(uniqueDate => {
+                  const matches = filteredRecords
+                    .filter(
+                      rec => moment(rec.from.toDate()).format(config.momentFormatWoTimestamp) === uniqueDate
+                    );
+
+                  let total = 0;
+                  matches.forEach(match => {
+                    const sub = calculateDiff(moment(match.to.toDate()).diff(match.from.toDate(), 'minutes'));
+                    total += sub;
+                  })
+
+                  calculatedData[uniqueDate] = total;
+                  console.log(`${moment(uniqueDate).format(config.dayFormat)} ${uniqueDate}`, total);
+                });
+
+                // console.log('calculatedData', calculatedData);
+              }}
+              className="bg-white drop-shadow-3xl px-5 py-2 hover:bg-gray-100"
+            >
+              Pull Hours/day
+            </button>
+          </div>
 
           <div className="container">
             <TableHeader

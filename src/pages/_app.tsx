@@ -6,8 +6,6 @@ import { AppProps } from 'next/app'
 import { Provider } from 'react-redux';
 import { appStore } from '~/redux/app-reducers'
 import Header from '~/components/Header';
-import {collection, getDocs} from '@firebase/firestore';
-import {firestoreDb} from '~/helpers/firebase';
 import {useTrackerStore} from '~/store/useTrackerStore';
 import {selectClients, selectSetClients} from '~/store/selectors/clients';
 import HydrateZustand from '~/components/HydrateZustand';
