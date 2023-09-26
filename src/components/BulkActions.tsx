@@ -36,11 +36,10 @@ const BulkActions = ({
 }: BulkActionsProps) => {
   const [active, setActive] = useState(false);
   // @ts-ignore
-  const [selectedText, setSelectedText] = useState<HandleBulkSelectionType>('');
+  const [selectedText, setSelectedText] = useState<HandleBulkSelectionType | ''>('');
 
   const handleBulkSelection = (actionType: HandleBulkSelectionType) => {
     const txt: ActionType = actions.find(action => action.id === actionType)!;
-    console.log('handleBulkSelection(action)', txt);
     setActive(false);
     setSelectedText(txt!.text as HandleBulkSelectionType);
   }
@@ -77,6 +76,8 @@ const BulkActions = ({
             alert('You must select a bulk action first');
           } else {
             onBulkAction(selectedText)
+            setActive(false);
+            setSelectedText('');
           }
         }}
       >
