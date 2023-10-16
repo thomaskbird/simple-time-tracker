@@ -51,6 +51,7 @@ const config: SiteTypes = {
   momentFormatWoTimestamp: 'YYYY-MM-DD',
   dayFormat: 'ddd',
   filters: filters,
+  hourlyRate: 55,
 };
 
 export default config;

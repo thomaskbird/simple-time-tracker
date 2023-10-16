@@ -28,6 +28,7 @@ export interface SiteTypes {
   momentFormat: string;
   momentFormatWoTimestamp: string;
   filters: FilterType[];
+  hourlyRate: number;
 }
 
 export interface RecordType {

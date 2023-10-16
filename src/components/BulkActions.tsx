@@ -70,6 +70,16 @@ const BulkActions = ({
       </div>
       <button
         type="button"
+        className="text-gray-700 absolute top-3 right-24 hover:underline"
+        onClick={() => {
+            setActive(false);
+            setSelectedText('');
+        }}
+      >
+        Clear
+      </button>
+      <button
+        type="button"
         className="text-green-700 absolute top-3 right-6 hover:underline"
         onClick={() => {
           if(!selectedText) {

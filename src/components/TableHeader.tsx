@@ -19,6 +19,7 @@ const TableHeader = ({ isAllChecked, onCheckAll }: TableHeaderProps) => {
         <TableHeaderColumn>From</TableHeaderColumn>
         <TableHeaderColumn>To</TableHeaderColumn>
         <TableHeaderColumn>Duration</TableHeaderColumn>
+        <TableHeaderColumn>Cost</TableHeaderColumn>
         <TableHeaderColumn>Status</TableHeaderColumn>
         <TableHeaderColumn width="flex-2x">Actions</TableHeaderColumn>
       </div>

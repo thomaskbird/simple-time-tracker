@@ -25,6 +25,8 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
     onUpdateRecords();
   };
 
+  const hoursForEntry = calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes')).toFixed(1);
+
   return (
     <div key={record.id} className="flex flex-row">
       <TableColumn width="flex-0">
@@ -35,7 +37,8 @@ const TableRecord = ({record, onUpdateRecords, onChecked}: TableRecordProps) => 
       <TableColumn>{record.description}</TableColumn>
       <TableColumn>{moment(record.from.toDate()).format(config.momentFormat)}</TableColumn>
       <TableColumn>{moment(record.to.toDate()).format(config.momentFormat)}</TableColumn>
-      <TableColumn>{calculateDiff(moment(record.to.toDate()).diff(record.from.toDate(), 'minutes')).toFixed(1)}hrs</TableColumn>
+      <TableColumn>{hoursForEntry}hrs</TableColumn>
+      <TableColumn>${(parseFloat(hoursForEntry) * config.hourlyRate).toFixed(2)}</TableColumn>
       <TableColumn stackChildren>
         <p className={record.logged ? 'text-green-400' : 'text-rose-400'}>{record.logged ? 'Logged' : 'Unlogged'}</p>
         <p className={record.paid ? 'text-green-400' : 'text-rose-400'}>{record.paid ? 'Paid' : 'Unpaid'}</p>

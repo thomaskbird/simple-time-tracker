@@ -33,6 +33,7 @@ const TableTotals = ({ records }: TableTotalsProps) => {
       <TableColumn>{startRange}</TableColumn>
       <TableColumn>{endRange}</TableColumn>
       <TableColumn>{totalTime}hrs</TableColumn>
+      <TableColumn>${(totalTime * config.hourlyRate).toFixed(2)}</TableColumn>
       <TableColumn></TableColumn>
       <TableColumn width="flex-2x"></TableColumn>
     </div>

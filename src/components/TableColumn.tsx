@@ -3,7 +3,7 @@ import {ReactNode} from 'react';
 interface TableColumnProps {
   width?: boolean | string;
   stackChildren?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const TableColumn = ({ width = false, stackChildren = false, children }: TableColumnProps) => {
